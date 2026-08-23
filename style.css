@@ -79,3 +79,19 @@ a {
         min-width: 70px;
     }
 }
+.next-day {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+    font-size: 16px;
+}
+
+.week-day {
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+}
+
+.week-day > h2:first-child {
+    margin-top: 30px;
+}
