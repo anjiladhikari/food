@@ -436,8 +436,10 @@ document.getElementById("todayBtn").onclick = () => {
     showToday();
 };
 
-document.getElementById("weekBtn").onclick =
-    showWeek;
+document.getElementById("weekBtn").onclick = () => {
+    weekStartOffset = 0;
+    showWeek();
+};
 
 document.getElementById("shopBtn").onclick =
     showShopping;
