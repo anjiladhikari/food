@@ -88,12 +88,18 @@ body.week-mode main {
 
 .week-buttons {
     display: flex;
-    gap: 0;
+    gap: 8px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .week-buttons button {
     border-radius: 7px;
+}
+
+.week-buttons button.active {
+    background: #666;
+    box-shadow: 0 0 0 2px #aaa;
 }
 
 .week-grid {
