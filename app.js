@@ -272,7 +272,7 @@ async function showWeek(startOffset = null) {
                             : getWeekdayName(day.offset);
 
                     return `
-                        <div class="week-column">
+<div class="week-column ${day.offset === weekStartOffset ? "selected-card" : ""}">
 
                             <div class="week-day-heading">
                                 <strong>${label}</strong>
