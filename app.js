@@ -4,8 +4,9 @@ const content = document.getElementById("content");
 
 let todayOffset = 0;
 
+
 // -------------------------
-// READ GOOGLE SHEET
+// GOOGLE SHEETS
 // -------------------------
 
 async function getSheet(sheetName) {
@@ -29,7 +30,7 @@ async function getSheet(sheetName) {
         row.c.map(cell => cell?.v ?? "")
     );
 
-    // Remove header rows and empty rows
+    // Remove headings and empty rows
     return rows.filter(row => {
         const firstCell = String(row[0] ?? "").trim();
 
@@ -85,7 +86,16 @@ function getWeekdayName(offset = 0) {
 }
 
 
-function renderDay(row, title = "") {
+function normalMode() {
+    document.body.classList.remove("week-mode");
+}
+
+
+// -------------------------
+// DAY DISPLAY
+// -------------------------
+
+function renderDay(row, title = "", showNext = false) {
     if (!row) {
         return "<p>No food plan found.</p>";
     }
@@ -93,7 +103,24 @@ function renderDay(row, title = "") {
     return `
         ${title ? `<h2>${title}</h2>` : ""}
 
-        <h2>${row[0]}</h2>
+        <div class="day-title-row">
+
+            <h2>${row[0]}</h2>
+
+            ${
+                showNext
+                    ? `
+                        <button
+                            class="small-next"
+                            onclick="showNextDay()"
+                        >
+                            Next →
+                        </button>
+                    `
+                    : ""
+            }
+
+        </div>
 
         <section>
             <h3>Breakfast · 8–9 AM</h3>
@@ -123,6 +150,8 @@ function renderDay(row, title = "") {
 // -------------------------
 
 async function showToday() {
+    normalMode();
+
     content.innerHTML = "Loading...";
 
     try {
@@ -136,18 +165,16 @@ async function showToday() {
         const label =
             todayOffset === 0
                 ? `Today · ${getWeekdayName(0)}`
-                : `${getWeekdayName(todayOffset)}`;
+                : todayOffset === 1
+                ? `Tomorrow · ${getWeekdayName(1)}`
+                : getWeekdayName(todayOffset);
 
-        content.innerHTML = `
-            ${renderDay(plan[selectedIndex], label)}
-
-            <button
-                class="next-day"
-                onclick="showNextDay()"
-            >
-                Next Day →
-            </button>
-        `;
+        content.innerHTML =
+            renderDay(
+                plan[selectedIndex],
+                label,
+                true
+            );
 
     } catch (error) {
         content.innerHTML =
@@ -175,6 +202,8 @@ function showNextDay() {
 // -------------------------
 
 async function showWeek() {
+    document.body.classList.add("week-mode");
+
     content.innerHTML = "Loading...";
 
     try {
@@ -182,28 +211,78 @@ async function showWeek() {
 
         const todayIndex = getTodayIndex();
 
-        let html = `<h2>Next 4 Days</h2>`;
+        const fourDays = [];
 
         for (let offset = 0; offset < 4; offset++) {
 
             const index =
                 (todayIndex + offset) % plan.length;
 
-            const label =
-                offset === 0
-                    ? `Today · ${getWeekdayName(0)}`
-                    : offset === 1
-                    ? `Tomorrow · ${getWeekdayName(1)}`
-                    : getWeekdayName(offset);
-
-            html += `
-                <div class="week-day">
-                    ${renderDay(plan[index], label)}
-                </div>
-            `;
+            fourDays.push({
+                row: plan[index],
+                offset: offset
+            });
         }
 
-        content.innerHTML = html;
+        content.innerHTML = `
+            <h2>Weekly Plan</h2>
+
+            <div class="week-buttons">
+
+                ${fourDays.map(day => `
+                    <button>
+                        ${day.row[0]}
+                    </button>
+                `).join("")}
+
+            </div>
+
+            <div class="week-grid">
+
+                ${fourDays.map(day => {
+
+                    const label =
+                        day.offset === 0
+                            ? `Today · ${getWeekdayName(0)}`
+                            : day.offset === 1
+                            ? `Tomorrow · ${getWeekdayName(1)}`
+                            : getWeekdayName(day.offset);
+
+                    return `
+                        <div class="week-column">
+
+                            <div class="week-day-heading">
+                                <strong>${label}</strong>
+                                <span>${day.row[0]}</span>
+                            </div>
+
+                            <div class="week-meal">
+                                <strong>Breakfast</strong>
+                                ${mealText(day.row[1])}
+                            </div>
+
+                            <div class="week-meal">
+                                <strong>Lunch</strong>
+                                ${mealText(day.row[2])}
+                            </div>
+
+                            <div class="week-meal">
+                                <strong>Dinner</strong>
+                                ${mealText(day.row[3])}
+                            </div>
+
+                            <div class="week-meal">
+                                <strong>Nutrition</strong>
+                                ${mealText(day.row[4])}
+                            </div>
+
+                        </div>
+                    `;
+
+                }).join("")}
+
+            </div>
+        `;
 
     } catch (error) {
         content.innerHTML =
@@ -219,6 +298,8 @@ async function showWeek() {
 // -------------------------
 
 async function showShopping() {
+    normalMode();
+
     content.innerHTML = "Loading...";
 
     try {
@@ -248,13 +329,13 @@ async function showShopping() {
                     ${
                         row[3]
                             ? `
-                            <a
-                                href="${row[3]}"
-                                target="_blank"
-                                rel="noopener"
-                            >
-                                Open Woolworths
-                            </a>
+                                <a
+                                    href="${row[3]}"
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    Open Woolworths
+                                </a>
                             `
                             : ""
                     }
@@ -277,6 +358,8 @@ async function showShopping() {
 // -------------------------
 
 async function showCooking() {
+    normalMode();
+
     content.innerHTML = "Loading...";
 
     try {
@@ -331,10 +414,15 @@ document.getElementById("todayBtn").onclick = () => {
     showToday();
 };
 
-document.getElementById("weekBtn").onclick = showWeek;
-document.getElementById("shopBtn").onclick = showShopping;
-document.getElementById("cookBtn").onclick = showCooking;
+document.getElementById("weekBtn").onclick =
+    showWeek;
+
+document.getElementById("shopBtn").onclick =
+    showShopping;
+
+document.getElementById("cookBtn").onclick =
+    showCooking;
 
 
-// Start app
+// Start
 showToday();
