@@ -16,3 +16,128 @@ async function getSheet(sheetName) {
         row.c.map(cell => cell?.v ?? "")
     );
 }
+
+let content = document.getElementById("content");
+
+function mealText(text) {
+    return String(text)
+        .split("\n")
+        .map(item => item.replace(/^\+\s*/, "").trim())
+        .filter(Boolean)
+        .map(item => `<div>${item}</div>`)
+        .join("");
+}
+
+function showDay(row) {
+    content.innerHTML = `
+        <h2>${row[0]}</h2>
+
+        <section>
+            <h3>Breakfast · 8–9 AM</h3>
+            ${mealText(row[1])}
+        </section>
+
+        <section>
+            <h3>Lunch · 1–3 PM</h3>
+            ${mealText(row[2])}
+        </section>
+
+        <section>
+            <h3>Dinner · 6–7 PM</h3>
+            ${mealText(row[3])}
+        </section>
+
+        <section>
+            <h3>Daily Nutrition</h3>
+            ${mealText(row[4])}
+        </section>
+    `;
+}
+
+async function showToday() {
+    content.innerHTML = "Loading...";
+
+    const plan = await getSheet("food plan");
+
+    // Monday = Day 1 ... Sunday = Day 7
+    const jsDay = new Date().getDay();
+    const dayNumber = jsDay === 0 ? 7 : jsDay;
+
+    showDay(plan[dayNumber - 1]);
+}
+
+async function showWeek() {
+    content.innerHTML = "Loading...";
+
+    const plan = await getSheet("food plan");
+
+    content.innerHTML = `
+        <h2>Weekly Plan</h2>
+
+        <div>
+            ${plan.map((row, index) =>
+                `<button onclick="openDay(${index})">${row[0]}</button>`
+            ).join("")}
+        </div>
+
+        <div id="dayPlan"></div>
+    `;
+
+    window.weekData = plan;
+}
+
+function openDay(index) {
+    const mainContent = document.getElementById("dayPlan");
+    const oldContent = content;
+
+    content = mainContent;
+    showDay(window.weekData[index]);
+    content = oldContent;
+}
+
+async function showShopping() {
+    content.innerHTML = "Loading...";
+
+    const foods = await getSheet("cooking links and which food");
+
+    content.innerHTML = `
+        <h2>Shopping</h2>
+
+        ${foods.map(row => `
+            <section>
+                <h3>${row[0]}</h3>
+                <strong>${row[1]}</strong>
+                <p>${row[2]}</p>
+                <a href="${row[3]}" target="_blank">
+                    Open Woolworths
+                </a>
+            </section>
+        `).join("")}
+    `;
+}
+
+async function showCooking() {
+    content.innerHTML = "Loading...";
+
+    const cooking = await getSheet("how to cook");
+
+    content.innerHTML = `
+        <h2>How to Cook</h2>
+
+        ${cooking.map(row => `
+            <section>
+                <h3>${row[0]}</h3>
+                <strong>${row[1]}</strong>
+                <p>${row[2]}</p>
+                <small>${row[3]}</small>
+            </section>
+        `).join("")}
+    `;
+}
+
+document.getElementById("todayBtn").onclick = showToday;
+document.getElementById("weekBtn").onclick = showWeek;
+document.getElementById("shopBtn").onclick = showShopping;
+document.getElementById("cookBtn").onclick = showCooking;
+
+showToday();
