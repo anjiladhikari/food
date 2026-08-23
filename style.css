@@ -177,7 +177,7 @@ body.week-mode main {
     }
 
     .week-buttons {
-        gap: 0;
+        gap: 5px;
     }
 
     .week-buttons button {
