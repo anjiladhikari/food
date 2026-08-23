@@ -3,6 +3,7 @@ const SHEET_ID = "1QwwTSwh7imbzvkHXPvvtZ5awNyf41r_aMnQUsLFivAY";
 const content = document.getElementById("content");
 
 let todayOffset = 0;
+let weekStartOffset = 0;
 
 
 // -------------------------
@@ -201,19 +202,38 @@ function showNextDay() {
 // TODAY + NEXT 3 DAYS
 // -------------------------
 
-async function showWeek() {
+async function showWeek(startOffset = null) {
     document.body.classList.add("week-mode");
+
+    if (startOffset !== null) {
+        weekStartOffset = startOffset;
+    }
 
     content.innerHTML = "Loading...";
 
     try {
         const plan = await getSheet("food plan");
-
         const todayIndex = getTodayIndex();
 
+        // All 7 buttons, starting from today
+        const sevenDays = [];
+
+        for (let offset = 0; offset < 7; offset++) {
+            const index =
+                (todayIndex + offset) % plan.length;
+
+            sevenDays.push({
+                row: plan[index],
+                offset: offset
+            });
+        }
+
+        // Only display selected day + next 3 days
         const fourDays = [];
 
-        for (let offset = 0; offset < 4; offset++) {
+        for (let i = 0; i < 4; i++) {
+            const offset =
+                (weekStartOffset + i) % 7;
 
             const index =
                 (todayIndex + offset) % plan.length;
@@ -229,8 +249,11 @@ async function showWeek() {
 
             <div class="week-buttons">
 
-                ${fourDays.map(day => `
-                    <button>
+                ${sevenDays.map(day => `
+                    <button
+                        class="${day.offset === weekStartOffset ? "active" : ""}"
+                        onclick="showWeek(${day.offset})"
+                    >
                         ${day.row[0]}
                     </button>
                 `).join("")}
@@ -291,7 +314,6 @@ async function showWeek() {
         console.error(error);
     }
 }
-
 
 // -------------------------
 // SHOPPING
