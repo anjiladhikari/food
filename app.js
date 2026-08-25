@@ -28,9 +28,17 @@ async function getSheet(sheetName) {
         text.substring(47, text.length - 2)
     );
 
-    const rows = data.table.rows.map(row =>
-        row.c.map(cell => cell?.v ?? "")
-    );
+    const rows = data.table.rows
+        .map(row => row.c.map(cell => cell?.v ?? ""))
+        .filter(row => {
+            const first = String(row[0]).trim();
+
+            return (
+                first &&
+                first !== "Day" &&
+                first !== "Food Item"
+            );
+        });
 
     cache[sheetName] = rows;
 
