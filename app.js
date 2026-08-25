@@ -5,38 +5,7 @@ const content = document.getElementById("content");
 let todayOffset = 0;
 let weekStartOffset = 0;
 
-function getFoodWeek() {
-    // Monday 24 Aug 2026 = Banana Week
-    const anchor = new Date(2026, 7, 24);
 
-    const today = new Date();
-
-    // Find this week's Monday
-    const day = today.getDay();
-    const diffToMonday = day === 0 ? -6 : 1 - day;
-
-    const monday = new Date(today);
-    monday.setDate(today.getDate() + diffToMonday);
-    monday.setHours(0, 0, 0, 0);
-
-    const weeksPassed = Math.floor(
-        (monday - anchor) / (7 * 24 * 60 * 60 * 1000)
-    );
-
-    return weeksPassed % 2 === 0
-        ? { name: "Banana Week", emoji: "🍌", className: "banana-week" }
-        : { name: "Rice Week", emoji: "🍚", className: "rice-week" };
-}
-
-function foodWeekBadge() {
-    const week = getFoodWeek();
-
-    return `
-        <span class="food-week ${week.className}">
-            ${week.emoji} ${week.name}
-        </span>
-    `;
-}
 // -------------------------
 // GOOGLE SHEETS
 // -------------------------
