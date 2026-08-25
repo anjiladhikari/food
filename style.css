@@ -61,6 +61,41 @@ a {
     margin-top: 8px;
 }
 
+/* BANANA / RICE WEEK */
+
+.page-title-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.page-title-row h2 {
+    margin-bottom: 10px;
+}
+
+.food-week {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.banana-week {
+    background: #fff1a8;
+    color: #685300;
+    border: 1px solid #e5c93f;
+}
+
+.rice-week {
+    background: #dff2ff;
+    color: #174d6d;
+    border: 1px solid #8cc9eb;
+}
 
 /* TODAY */
 
@@ -78,7 +113,6 @@ a {
     padding: 6px 10px;
     font-size: 13px;
 }
-
 
 /* WEEK */
 
@@ -144,7 +178,6 @@ body.week-mode main {
     font-size: 14px;
 }
 
-
 /* MOBILE */
 
 @media (max-width: 600px) {
@@ -171,13 +204,26 @@ body.week-mode main {
         min-width: auto;
     }
 
+    .page-title-row {
+        gap: 8px;
+    }
+
+    .page-title-row h2 {
+        margin-right: 4px;
+    }
+
+    .food-week {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
     body.week-mode main {
         padding-left: 6px;
         padding-right: 6px;
     }
 
     .week-buttons {
-        gap: 5px;
+        gap: 0;
     }
 
     .week-buttons button {
@@ -221,10 +267,4 @@ body.week-mode main {
         line-height: 1.3;
         word-break: break-word;
     }
-}
-
-
-.week-column.selected-card {
-    background: #f0f0f0;
-    box-shadow: 0 0 0 2px #aaa;
 }
