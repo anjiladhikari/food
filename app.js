@@ -1,26 +1,17 @@
 const SHEET_ID = "1QwwTSwh7imbzvkHXPvvtZ5awNyf41r_aMnQUsLFivAY";
 
-const content = document.getElementById("content");
-
-let todayOffset = 0;
-let weekStartOffset = 0;
-
-
-// -------------------------
-// GOOGLE SHEETS
-// -------------------------
+const cache = {};
 
 async function getSheet(sheetName) {
+    if (cache[sheetName]) {
+        return cache[sheetName];
+    }
+
     const url =
         `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq` +
         `?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
 
     const response = await fetch(url);
-
-    if (!response.ok) {
-        throw new Error("Could not load Google Sheet.");
-    }
-
     const text = await response.text();
 
     const data = JSON.parse(
@@ -31,97 +22,25 @@ async function getSheet(sheetName) {
         row.c.map(cell => cell?.v ?? "")
     );
 
-    // Remove headings and empty rows
-    return rows.filter(row => {
-        const firstCell = String(row[0] ?? "").trim();
+    cache[sheetName] = rows;
 
-        return (
-            firstCell &&
-            firstCell !== "Day" &&
-            firstCell !== "Food Item"
-        );
-    });
+    return rows;
 }
 
-
-// -------------------------
-// HELPERS
-// -------------------------
+const content = document.getElementById("content");
 
 function mealText(text) {
-    if (!text) return "";
-
     return String(text)
         .split("\n")
-        .map(item =>
-            item
-                .replace(/^[+•]\s*/, "")
-                .trim()
-        )
+        .map(item => item.replace(/^\+\s*/, "").trim())
         .filter(Boolean)
         .map(item => `<div>${item}</div>`)
         .join("");
 }
 
-
-function getTodayIndex() {
-    const day = new Date().getDay();
-
-    // Monday = Day 1
-    // Tuesday = Day 2
-    // ...
-    // Sunday = Day 7
-
-    return day === 0 ? 6 : day - 1;
-}
-
-
-function getWeekdayName(offset = 0) {
-    const date = new Date();
-
-    date.setDate(date.getDate() + offset);
-
-    return date.toLocaleDateString("en-AU", {
-        weekday: "long"
-    });
-}
-
-
-function normalMode() {
-    document.body.classList.remove("week-mode");
-}
-
-
-// -------------------------
-// DAY DISPLAY
-// -------------------------
-
-function renderDay(row, title = "", showNext = false) {
-    if (!row) {
-        return "<p>No food plan found.</p>";
-    }
-
-    return `
-        ${title ? `<h2>${title}</h2>` : ""}
-
-        <div class="day-title-row">
-
-            <h2>${row[0]}</h2>
-
-            ${
-                showNext
-                    ? `
-                        <button
-                            class="small-next"
-                            onclick="showNextDay()"
-                        >
-                            Next →
-                        </button>
-                    `
-                    : ""
-            }
-
-        </div>
+function renderDay(row, target = content) {
+    target.innerHTML = `
+        <h2>${row[0]}</h2>
 
         <section>
             <h3>Breakfast · 8–9 AM</h3>
@@ -139,314 +58,95 @@ function renderDay(row, title = "", showNext = false) {
         </section>
 
         <section>
-            <h3>Daily Nutrition & Cost</h3>
+            <h3>Daily Nutrition</h3>
             ${mealText(row[4])}
         </section>
     `;
 }
 
-
-// -------------------------
-// TODAY
-// -------------------------
-
 async function showToday() {
-    normalMode();
-
     content.innerHTML = "Loading...";
 
-    try {
-        const plan = await getSheet("food plan");
+    const plan = await getSheet("food plan");
 
-        const todayIndex = getTodayIndex();
+    const jsDay = new Date().getDay();
+    const dayNumber = jsDay === 0 ? 7 : jsDay;
 
-        const selectedIndex =
-            (todayIndex + todayOffset) % plan.length;
-
-        const label =
-            todayOffset === 0
-                ? `Today · ${getWeekdayName(0)}`
-                : todayOffset === 1
-                ? `Tomorrow · ${getWeekdayName(1)}`
-                : getWeekdayName(todayOffset);
-
-        content.innerHTML =
-            renderDay(
-                plan[selectedIndex],
-                label,
-                true
-            );
-
-    } catch (error) {
-        content.innerHTML =
-            "<p>Could not load the food plan.</p>";
-
-        console.error(error);
-    }
+    renderDay(plan[dayNumber - 1]);
 }
 
+async function showWeek() {
+    const plan = await getSheet("food plan");
 
-function showNextDay() {
-    todayOffset++;
+    content.innerHTML = `
+        <h2>Weekly Plan</h2>
 
-    if (todayOffset >= 7) {
-        todayOffset = 0;
-    }
+        <div>
+            ${plan.map((row, index) =>
+                `<button onclick="openDay(${index})">${row[0]}</button>`
+            ).join("")}
+        </div>
 
-    showToday();
+        <div id="dayPlan"></div>
+    `;
+
+    window.weekData = plan;
 }
 
-
-// -------------------------
-// WEEK
-// TODAY + NEXT 3 DAYS
-// -------------------------
-
-async function showWeek(startOffset = null) {
-    document.body.classList.add("week-mode");
-
-    if (startOffset !== null) {
-        weekStartOffset = startOffset;
-    }
-
-    content.innerHTML = "Loading...";
-
-    try {
-        const plan = await getSheet("food plan");
-        const todayIndex = getTodayIndex();
-
-        // All 7 buttons, starting from today
-        const sevenDays = [];
-
-        for (let offset = 0; offset < 7; offset++) {
-            const index =
-                (todayIndex + offset) % plan.length;
-
-            sevenDays.push({
-                row: plan[index],
-                offset: offset
-            });
-        }
-
-        // Only display selected day + next 3 days
-        const fourDays = [];
-
-        for (let i = 0; i < 4; i++) {
-            const offset =
-                (weekStartOffset + i) % 7;
-
-            const index =
-                (todayIndex + offset) % plan.length;
-
-            fourDays.push({
-                row: plan[index],
-                offset: offset
-            });
-        }
-
-        content.innerHTML = `
-            <h2>Weekly Plan</h2>
-
-            <div class="week-buttons">
-
-                ${sevenDays.map(day => `
-                    <button
-                        class="${day.offset === weekStartOffset ? "active" : ""}"
-                        onclick="showWeek(${day.offset})"
-                    >
-                        ${day.row[0]}
-                    </button>
-                `).join("")}
-
-            </div>
-
-            <div class="week-grid">
-
-                ${fourDays.map(day => {
-
-                    const label =
-                        day.offset === 0
-                            ? `Today · ${getWeekdayName(0)}`
-                            : day.offset === 1
-                            ? `Tomorrow · ${getWeekdayName(1)}`
-                            : getWeekdayName(day.offset);
-
-                    return `
-<div class="week-column ${day.offset === weekStartOffset ? "selected-card" : ""}">
-
-                            <div class="week-day-heading">
-                                <strong>${label}</strong>
-                                <span>${day.row[0]}</span>
-                            </div>
-
-                            <div class="week-meal">
-                                <strong>Breakfast</strong>
-                                ${mealText(day.row[1])}
-                            </div>
-
-                            <div class="week-meal">
-                                <strong>Lunch</strong>
-                                ${mealText(day.row[2])}
-                            </div>
-
-                            <div class="week-meal">
-                                <strong>Dinner</strong>
-                                ${mealText(day.row[3])}
-                            </div>
-
-                            <div class="week-meal">
-                                <strong>Nutrition</strong>
-                                ${mealText(day.row[4])}
-                            </div>
-
-                        </div>
-                    `;
-
-                }).join("")}
-
-            </div>
-        `;
-
-    } catch (error) {
-        content.innerHTML =
-            "<p>Could not load the weekly plan.</p>";
-
-        console.error(error);
-    }
+function openDay(index) {
+    renderDay(
+        window.weekData[index],
+        document.getElementById("dayPlan")
+    );
 }
-
-// -------------------------
-// SHOPPING
-// -------------------------
 
 async function showShopping() {
-    normalMode();
-
     content.innerHTML = "Loading...";
 
-    try {
-        const foods =
-            await getSheet("cooking links and which food");
+    const foods = await getSheet("cooking links and which food");
 
-        content.innerHTML = `
-            <h2>Shopping</h2>
+    content.innerHTML = `
+        <h2>Shopping</h2>
 
-            ${foods.map(row => `
-                <section>
-
-                    <h3>${row[0]}</h3>
-
-                    ${
-                        row[1]
-                            ? `<strong>${row[1]}</strong>`
-                            : ""
-                    }
-
-                    ${
-                        row[2]
-                            ? `<p>${row[2]}</p>`
-                            : ""
-                    }
-
-                    ${
-                        row[3]
-                            ? `
-                                <a
-                                    href="${row[3]}"
-                                    target="_blank"
-                                    rel="noopener"
-                                >
-                                    Open Woolworths
-                                </a>
-                            `
-                            : ""
-                    }
-
-                </section>
-            `).join("")}
-        `;
-
-    } catch (error) {
-        content.innerHTML =
-            "<p>Could not load shopping information.</p>";
-
-        console.error(error);
-    }
+        ${foods.map(row => `
+            <section>
+                <h3>${row[0]}</h3>
+                <strong>${row[1]}</strong>
+                <p>${row[2]}</p>
+                <a href="${row[3]}" target="_blank">
+                    Open Woolworths
+                </a>
+            </section>
+        `).join("")}
+    `;
 }
-
-
-// -------------------------
-// COOKING
-// -------------------------
 
 async function showCooking() {
-    normalMode();
-
     content.innerHTML = "Loading...";
 
-    try {
-        const cooking =
-            await getSheet("how to cook");
+    const cooking = await getSheet("how to cook");
 
-        content.innerHTML = `
-            <h2>How to Cook</h2>
+    content.innerHTML = `
+        <h2>How to Cook</h2>
 
-            ${cooking.map(row => `
-                <section>
-
-                    <h3>${row[0]}</h3>
-
-                    ${
-                        row[1]
-                            ? `<strong>${row[1]}</strong>`
-                            : ""
-                    }
-
-                    ${
-                        row[2]
-                            ? `<p>${row[2]}</p>`
-                            : ""
-                    }
-
-                    ${
-                        row[3]
-                            ? `<small>${row[3]}</small>`
-                            : ""
-                    }
-
-                </section>
-            `).join("")}
-        `;
-
-    } catch (error) {
-        content.innerHTML =
-            "<p>Could not load cooking information.</p>";
-
-        console.error(error);
-    }
+        ${cooking.map(row => `
+            <section>
+                <h3>${row[0]}</h3>
+                <strong>${row[1]}</strong>
+                <p>${row[2]}</p>
+                <small>${row[3]}</small>
+            </section>
+        `).join("")}
+    `;
 }
 
+document.getElementById("todayBtn").onclick = showToday;
+document.getElementById("weekBtn").onclick = showWeek;
+document.getElementById("shopBtn").onclick = showShopping;
+document.getElementById("cookBtn").onclick = showCooking;
 
-// -------------------------
-// NAVIGATION
-// -------------------------
-
-document.getElementById("todayBtn").onclick = () => {
-    todayOffset = 0;
-    showToday();
-};
-
-document.getElementById("weekBtn").onclick = () => {
-    weekStartOffset = 0;
-    showWeek();
-};
-
-document.getElementById("shopBtn").onclick =
-    showShopping;
-
-document.getElementById("cookBtn").onclick =
-    showCooking;
-
-
-// Start
 showToday();
+
+// Preload the other sheets in the background
+getSheet("cooking links and which food");
+getSheet("how to cook");
