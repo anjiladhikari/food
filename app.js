@@ -10,17 +10,18 @@ let weekStartOffset = 0;
 // GOOGLE SHEETS
 // -------------------------
 
+const cache = {};
+
 async function getSheet(sheetName) {
+    if (cache[sheetName]) {
+        return cache[sheetName];
+    }
+
     const url =
         `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq` +
         `?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
 
     const response = await fetch(url);
-
-    if (!response.ok) {
-        throw new Error("Could not load Google Sheet.");
-    }
-
     const text = await response.text();
 
     const data = JSON.parse(
@@ -31,18 +32,10 @@ async function getSheet(sheetName) {
         row.c.map(cell => cell?.v ?? "")
     );
 
-    // Remove headings and empty rows
-    return rows.filter(row => {
-        const firstCell = String(row[0] ?? "").trim();
+    cache[sheetName] = rows;
 
-        return (
-            firstCell &&
-            firstCell !== "Day" &&
-            firstCell !== "Food Item"
-        );
-    });
+    return rows;
 }
-
 
 // -------------------------
 // HELPERS
