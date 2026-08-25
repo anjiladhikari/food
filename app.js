@@ -5,12 +5,61 @@ const content = document.getElementById("content");
 let todayOffset = 0;
 let weekStartOffset = 0;
 
+const cache = {};
+
+// -------------------------
+// BANANA / RICE WEEK
+// -------------------------
+
+function getFoodWeek() {
+    // Monday 24 August 2026 = Banana Week
+    const anchorMonday = new Date(2026, 7, 24);
+    anchorMonday.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+
+    // Find Monday of the current week
+    const day = today.getDay();
+    const diffToMonday = day === 0 ? -6 : 1 - day;
+
+    const currentMonday = new Date(today);
+    currentMonday.setDate(today.getDate() + diffToMonday);
+    currentMonday.setHours(0, 0, 0, 0);
+
+    const oneWeek = 7 * 24 * 60 * 60 * 1000;
+
+    const weeksPassed = Math.round(
+        (currentMonday - anchorMonday) / oneWeek
+    );
+
+    if (Math.abs(weeksPassed) % 2 === 0) {
+        return {
+            name: "Banana Week",
+            emoji: "🍌",
+            className: "banana-week"
+        };
+    }
+
+    return {
+        name: "Rice Week",
+        emoji: "🍚",
+        className: "rice-week"
+    };
+}
+
+function foodWeekBadge() {
+    const week = getFoodWeek();
+
+    return `
+        <span class="food-week ${week.className}">
+            ${week.emoji} ${week.name}
+        </span>
+    `;
+}
 
 // -------------------------
 // GOOGLE SHEETS
 // -------------------------
-
-const cache = {};
 
 async function getSheet(sheetName) {
     if (cache[sheetName]) {
@@ -29,7 +78,9 @@ async function getSheet(sheetName) {
     );
 
     const rows = data.table.rows
-        .map(row => row.c.map(cell => cell?.v ?? ""))
+        .map(row =>
+            row.c.map(cell => cell?.v ?? "")
+        )
         .filter(row => {
             const first = String(row[0]).trim();
 
@@ -64,18 +115,15 @@ function mealText(text) {
         .join("");
 }
 
-
 function getTodayIndex() {
     const day = new Date().getDay();
 
     // Monday = Day 1
-    // Tuesday = Day 2
     // ...
     // Sunday = Day 7
 
     return day === 0 ? 6 : day - 1;
 }
-
 
 function getWeekdayName(offset = 0) {
     const date = new Date();
@@ -87,11 +135,18 @@ function getWeekdayName(offset = 0) {
     });
 }
 
-
 function normalMode() {
     document.body.classList.remove("week-mode");
 }
 
+function pageTitle(title) {
+    return `
+        <div class="page-title-row">
+            <h2>${title}</h2>
+            ${foodWeekBadge()}
+        </div>
+    `;
+}
 
 // -------------------------
 // DAY DISPLAY
@@ -103,10 +158,9 @@ function renderDay(row, title = "", showNext = false) {
     }
 
     return `
-        ${title ? `<h2>${title}</h2>` : ""}
+        ${title ? pageTitle(title) : ""}
 
         <div class="day-title-row">
-
             <h2>${row[0]}</h2>
 
             ${
@@ -121,7 +175,6 @@ function renderDay(row, title = "", showNext = false) {
                     `
                     : ""
             }
-
         </div>
 
         <section>
@@ -145,7 +198,6 @@ function renderDay(row, title = "", showNext = false) {
         </section>
     `;
 }
-
 
 // -------------------------
 // TODAY
@@ -171,12 +223,11 @@ async function showToday() {
                 ? `Tomorrow · ${getWeekdayName(1)}`
                 : getWeekdayName(todayOffset);
 
-        content.innerHTML =
-            renderDay(
-                plan[selectedIndex],
-                label,
-                true
-            );
+        content.innerHTML = renderDay(
+            plan[selectedIndex],
+            label,
+            true
+        );
 
     } catch (error) {
         content.innerHTML =
@@ -185,7 +236,6 @@ async function showToday() {
         console.error(error);
     }
 }
-
 
 function showNextDay() {
     todayOffset++;
@@ -197,10 +247,8 @@ function showNextDay() {
     showToday();
 }
 
-
 // -------------------------
 // WEEK
-// TODAY + NEXT 3 DAYS
 // -------------------------
 
 async function showWeek(startOffset = null) {
@@ -216,7 +264,6 @@ async function showWeek(startOffset = null) {
         const plan = await getSheet("food plan");
         const todayIndex = getTodayIndex();
 
-        // All 7 buttons, starting from today
         const sevenDays = [];
 
         for (let offset = 0; offset < 7; offset++) {
@@ -225,11 +272,10 @@ async function showWeek(startOffset = null) {
 
             sevenDays.push({
                 row: plan[index],
-                offset: offset
+                offset
             });
         }
 
-        // Only display selected day + next 3 days
         const fourDays = [];
 
         for (let i = 0; i < 4; i++) {
@@ -241,30 +287,30 @@ async function showWeek(startOffset = null) {
 
             fourDays.push({
                 row: plan[index],
-                offset: offset
+                offset
             });
         }
 
         content.innerHTML = `
-            <h2>Weekly Plan</h2>
+            ${pageTitle("Weekly Plan")}
 
             <div class="week-buttons">
-
                 ${sevenDays.map(day => `
                     <button
-                        class="${day.offset === weekStartOffset ? "active" : ""}"
+                        class="${
+                            day.offset === weekStartOffset
+                                ? "active"
+                                : ""
+                        }"
                         onclick="showWeek(${day.offset})"
                     >
                         ${day.row[0]}
                     </button>
                 `).join("")}
-
             </div>
 
             <div class="week-grid">
-
                 ${fourDays.map(day => {
-
                     const label =
                         day.offset === 0
                             ? `Today · ${getWeekdayName(0)}`
@@ -273,7 +319,11 @@ async function showWeek(startOffset = null) {
                             : getWeekdayName(day.offset);
 
                     return `
-<div class="week-column ${day.offset === weekStartOffset ? "selected-card" : ""}">
+                        <div class="week-column ${
+                            day.offset === weekStartOffset
+                                ? "selected-card"
+                                : ""
+                        }">
 
                             <div class="week-day-heading">
                                 <strong>${label}</strong>
@@ -302,9 +352,7 @@ async function showWeek(startOffset = null) {
 
                         </div>
                     `;
-
                 }).join("")}
-
             </div>
         `;
 
@@ -334,7 +382,6 @@ async function showShopping() {
 
             ${foods.map(row => `
                 <section>
-
                     <h3>${row[0]}</h3>
 
                     ${
@@ -362,7 +409,6 @@ async function showShopping() {
                             `
                             : ""
                     }
-
                 </section>
             `).join("")}
         `;
@@ -374,7 +420,6 @@ async function showShopping() {
         console.error(error);
     }
 }
-
 
 // -------------------------
 // COOKING
@@ -394,7 +439,6 @@ async function showCooking() {
 
             ${cooking.map(row => `
                 <section>
-
                     <h3>${row[0]}</h3>
 
                     ${
@@ -414,7 +458,6 @@ async function showCooking() {
                             ? `<small>${row[3]}</small>`
                             : ""
                     }
-
                 </section>
             `).join("")}
         `;
@@ -426,7 +469,6 @@ async function showCooking() {
         console.error(error);
     }
 }
-
 
 // -------------------------
 // NAVIGATION
@@ -448,6 +490,9 @@ document.getElementById("shopBtn").onclick =
 document.getElementById("cookBtn").onclick =
     showCooking;
 
-
 // Start
 showToday();
+
+// Preload remaining sheets in background
+getSheet("cooking links and which food");
+getSheet("how to cook");
