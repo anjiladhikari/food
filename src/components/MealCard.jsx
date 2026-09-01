@@ -10,15 +10,15 @@ export default function MealCard({ accent, title, time, items, compact = false }
 
   if (compact) {
     return (
-      <div className="border-t border-line pt-4">
-        <div className="flex items-center gap-2">
+      <div className="min-w-0 border-t border-line pt-2 sm:pt-4">
+        <div className="flex items-center gap-1 sm:gap-2">
           <span className={"h-1.5 w-1.5 shrink-0 rounded-full " + dot} />
-          <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
+          <h4 className="text-[9px] font-semibold uppercase tracking-[0.06em] text-muted sm:text-[11px] sm:tracking-[0.12em]">
             {title}
           </h4>
         </div>
 
-        <ul className="mt-1.5 space-y-1 text-[13px] leading-snug text-ink/95">
+        <ul className="mt-1 space-y-0.5 text-[10px] leading-snug break-words text-ink/95 sm:mt-1.5 sm:space-y-1 sm:text-[13px]">
           {items.length ? (
             items.map((item, i) => <li key={i}>{item}</li>)
           ) : (
