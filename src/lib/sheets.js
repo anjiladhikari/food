@@ -1,0 +1,102 @@
+import { useEffect, useState } from "react";
+
+export const SHEET_ID = "1QwwTSwh7imbzvkHXPvvtZ5awNyf41r_aMnQUsLFivAY";
+
+export const SHEETS = {
+  plan: "food plan",
+  shopping: "cooking links and which food",
+  cooking: "how to cook",
+};
+
+// One in-memory entry per sheet, kept for the whole page session.
+// The promise itself is cached so concurrent callers share a single fetch.
+const cache = {};
+
+export function getSheet(sheetName) {
+  if (cache[sheetName]) {
+    return cache[sheetName];
+  }
+
+  const url =
+    `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq` +
+    `?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+
+  const request = fetch(url)
+    .then((response) => response.text())
+    .then((text) => {
+      const data = JSON.parse(text.substring(47, text.length - 2));
+
+      return data.table.rows
+        .map((row) => row.c.map((cell) => cell?.v ?? ""))
+        .filter((row) => {
+          const first = String(row[0]).trim();
+
+          return first && first !== "Day" && first !== "Food Item";
+        });
+    })
+    .catch((error) => {
+      // Let a failed sheet be retried later instead of caching the failure.
+      delete cache[sheetName];
+      throw error;
+    });
+
+  cache[sheetName] = request;
+
+  return request;
+}
+
+export function useSheet(sheetName) {
+  const [rows, setRows] = useState(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    setError(false);
+
+    getSheet(sheetName)
+      .then((data) => active && setRows(data))
+      .catch((err) => {
+        console.error(err);
+        if (active) setError(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [sheetName]);
+
+  return { rows, error, loading: !rows && !error };
+}
+
+// A sheet cell holds one meal as newline separated "+ item" lines.
+export function mealLines(text) {
+  if (!text) return [];
+
+  return String(text)
+    .split("\n")
+    .map((item) => item.replace(/^[+•]\s*/, "").trim())
+    .filter(Boolean);
+}
+
+// Monday = Day 1 ... Sunday = Day 7
+export function getTodayIndex() {
+  const day = new Date().getDay();
+
+  return day === 0 ? 6 : day - 1;
+}
+
+export function getWeekdayName(offset = 0) {
+  const date = new Date();
+
+  date.setDate(date.getDate() + offset);
+
+  return date.toLocaleDateString("en-AU", { weekday: "long" });
+}
+
+export function dayLabel(offset) {
+  if (offset === 0) return `Today · ${getWeekdayName(0)}`;
+  if (offset === 1) return `Tomorrow · ${getWeekdayName(1)}`;
+
+  return getWeekdayName(offset);
+}
