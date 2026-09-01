@@ -10,7 +10,7 @@ export default function MealCard({ accent, title, time, items, compact = false }
 
   if (compact) {
     return (
-      <div>
+      <div className="border-t border-line pt-4">
         <div className="flex items-center gap-2">
           <span className={"h-1.5 w-1.5 shrink-0 rounded-full " + dot} />
           <h4 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">

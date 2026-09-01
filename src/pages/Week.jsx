@@ -66,43 +66,41 @@ export default function Week() {
             <div
               key={offset}
               className={
-                "rounded-2xl border bg-surface p-4 sm:p-5 " +
+                "row-span-5 grid grid-rows-subgrid gap-y-4 rounded-2xl border bg-surface p-4 sm:p-5 " +
                 (offset === startOffset ? "border-ink/25" : "border-line")
               }
             >
-              <div className="border-b border-line pb-3">
+              <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-clay">
                   {dayLabel(offset)}
                 </p>
                 <p className="mt-0.5 font-display text-xl">{row[0]}</p>
               </div>
 
-              <div className="mt-4 space-y-4">
-                <MealCard
-                  compact
-                  accent="breakfast"
-                  title="Breakfast"
-                  items={mealLines(row[1])}
-                />
-                <MealCard
-                  compact
-                  accent="lunch"
-                  title="Lunch"
-                  items={mealLines(row[2])}
-                />
-                <MealCard
-                  compact
-                  accent="dinner"
-                  title="Dinner"
-                  items={mealLines(row[3])}
-                />
-                <MealCard
-                  compact
-                  accent="nutrition"
-                  title="Nutrition"
-                  items={mealLines(row[4])}
-                />
-              </div>
+              <MealCard
+                compact
+                accent="breakfast"
+                title="Breakfast"
+                items={mealLines(row[1])}
+              />
+              <MealCard
+                compact
+                accent="lunch"
+                title="Lunch"
+                items={mealLines(row[2])}
+              />
+              <MealCard
+                compact
+                accent="dinner"
+                title="Dinner"
+                items={mealLines(row[3])}
+              />
+              <MealCard
+                compact
+                accent="nutrition"
+                title="Nutrition"
+                items={mealLines(row[4])}
+              />
             </div>
           );
         })}
