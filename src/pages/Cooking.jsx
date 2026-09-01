@@ -34,7 +34,7 @@ export default function Cooking() {
             )}
 
             {row[2] && (
-              <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-ink/80">
+              <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-ink/90">
                 {row[2]}
               </p>
             )}

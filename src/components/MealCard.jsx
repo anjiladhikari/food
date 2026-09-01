@@ -18,7 +18,7 @@ export default function MealCard({ accent, title, time, items, compact = false }
           </h4>
         </div>
 
-        <ul className="mt-1.5 space-y-1 text-[13px] leading-snug text-ink/85">
+        <ul className="mt-1.5 space-y-1 text-[13px] leading-snug text-ink/95">
           {items.length ? (
             items.map((item, i) => <li key={i}>{item}</li>)
           ) : (
@@ -44,7 +44,7 @@ export default function MealCard({ accent, title, time, items, compact = false }
         )}
       </div>
 
-      <ul className="mt-3 space-y-1.5 text-[15px] leading-relaxed text-ink/90 sm:text-base">
+      <ul className="mt-3 space-y-1.5 text-[15px] leading-relaxed text-ink sm:text-base">
         {items.length ? (
           items.map((item, i) => <li key={i}>{item}</li>)
         ) : (
