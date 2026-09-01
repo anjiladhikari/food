@@ -46,10 +46,10 @@ export default function Week() {
               type="button"
               onClick={() => setStartOffset(offset)}
               className={
-                "rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition-colors sm:text-sm " +
+                "cursor-pointer rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream active:translate-y-0 motion-safe:hover:-translate-y-px sm:text-sm " +
                 (isActive
                   ? "border-ink bg-ink text-cream"
-                  : "border-line bg-surface text-muted hover:text-ink")
+                  : "border-line bg-surface text-muted hover:border-ink/40 hover:bg-ink/5 hover:text-ink")
               }
             >
               {rowFor(offset)[0]}

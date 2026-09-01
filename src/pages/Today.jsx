@@ -41,7 +41,7 @@ export default function Today() {
         <button
           type="button"
           onClick={() => setOffset((value) => (value + 1) % 7)}
-          className="mt-1 shrink-0 rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium transition-colors hover:bg-ink hover:text-cream"
+          className="mt-1 shrink-0 cursor-pointer rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium transition-all duration-150 hover:border-ink hover:bg-ink hover:text-cream hover:shadow-md hover:shadow-black/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream active:translate-y-0 motion-safe:hover:-translate-y-px"
         >
           Next →
         </button>

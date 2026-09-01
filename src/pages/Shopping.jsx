@@ -44,7 +44,7 @@ export default function Shopping() {
                 href={row[3]}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-block rounded-full border border-line px-4 py-2 text-sm font-medium transition-colors hover:bg-ink hover:text-cream"
+                className="mt-4 inline-block cursor-pointer rounded-full border border-line px-4 py-2 text-sm font-medium transition-all duration-150 hover:border-ink hover:bg-ink hover:text-cream hover:shadow-md hover:shadow-black/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface active:translate-y-0 motion-safe:hover:-translate-y-px"
               >
                 Open Woolworths →
               </a>
