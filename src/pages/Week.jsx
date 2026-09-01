@@ -58,7 +58,7 @@ export default function Week() {
         })}
       </div>
 
-      <div className="mt-5 grid gap-3 sm:mt-7 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+      <div className="mt-5 grid grid-cols-4 gap-1.5 sm:mt-7 sm:gap-4">
         {visibleOffsets.map((offset) => {
           const row = rowFor(offset);
 
@@ -66,15 +66,15 @@ export default function Week() {
             <div
               key={offset}
               className={
-                "row-span-5 grid grid-rows-subgrid gap-y-4 rounded-2xl border bg-surface p-4 sm:p-5 " +
+                "row-span-5 grid min-w-0 grid-rows-subgrid gap-y-2 rounded-xl border bg-surface p-2 sm:gap-y-4 sm:rounded-2xl sm:p-5 " +
                 (offset === startOffset ? "border-ink/25" : "border-line")
               }
             >
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-clay">
+              <div className="min-w-0">
+                <p className="text-[9px] leading-tight font-semibold uppercase tracking-[0.08em] break-words text-clay sm:text-[11px] sm:tracking-[0.14em]">
                   {dayLabel(offset)}
                 </p>
-                <p className="mt-0.5 font-display text-xl">{row[0]}</p>
+                <p className="mt-0.5 font-display text-sm sm:text-xl">{row[0]}</p>
               </div>
 
               <MealCard
