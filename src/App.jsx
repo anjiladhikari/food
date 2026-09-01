@@ -45,8 +45,8 @@ export default function App() {
 
       <main
         className={
-          "mx-auto w-full px-4 pb-16 pt-6 sm:px-6 sm:pt-8 " +
-          (tab === "week" ? "max-w-6xl" : "max-w-3xl")
+          "mx-auto w-full pb-16 pt-6 sm:px-6 sm:pt-8 " +
+          (tab === "week" ? "max-w-6xl px-2" : "max-w-3xl px-4")
         }
       >
         <Page />
