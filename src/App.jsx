@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navigation from "./components/Navigation.jsx";
 import Footer from "./components/Footer.jsx";
 import Today from "./pages/Today.jsx";
@@ -22,6 +22,25 @@ const TABS = [
   { id: "purchases", label: "Purchases", Page: Purchases },
 ];
 
+function playTick(context) {
+  if (!context || context.state !== "running") return;
+
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  const now = context.currentTime;
+
+  oscillator.type = "sine";
+  oscillator.frequency.value = 1200;
+
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.015, now + 0.001);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+
+  oscillator.connect(gain).connect(context.destination);
+  oscillator.start(now);
+  oscillator.stop(now + 0.04);
+}
+
 function localTime() {
   return new Date().toLocaleTimeString([], {
     hour: "2-digit",
@@ -38,6 +57,9 @@ export default function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const [loginRequested, setLoginRequested] = useState(false);
   const [clock, setClock] = useState(() => localTime());
+  const [soundOn, setSoundOn] = useState(false);
+  const soundOnRef = useRef(false);
+  const audioRef = useRef(null);
 
   // Warm the cache once per page session; every tab reuses these fetches.
   useEffect(() => {
@@ -46,10 +68,34 @@ export default function App() {
     });
   }, []);
   useEffect(() => {
-    const id = setInterval(() => setClock(localTime()), 1000);
+    const id = setInterval(() => {
+      setClock(localTime());
 
-    return () => clearInterval(id);
+      if (soundOnRef.current) playTick(audioRef.current);
+    }, 1000);
+
+    return () => {
+      clearInterval(id);
+      audioRef.current?.close();
+      audioRef.current = null;
+    };
   }, []);
+
+  function toggleSound() {
+    const next = !soundOn;
+
+    setSoundOn(next);
+    soundOnRef.current = next;
+
+    if (next) {
+      if (!audioRef.current) {
+        audioRef.current = new (window.AudioContext ||
+          window.webkitAudioContext)();
+      }
+
+      audioRef.current.resume();
+    }
+  }
 
   useEffect(() => {
     getUser()
@@ -97,13 +143,30 @@ function handleTabChange(nextTab) {
             My Food Plan
           </h1>
 
-          <div className="text-right leading-tight">
+          <div className="rounded-md border-l border-line bg-surface px-2 py-0.5 text-left leading-tight">
             <p className="text-[9px] uppercase tracking-[0.14em] text-muted sm:text-[10px]">
               {today}
             </p>
-            <p className="text-[9px] tabular-nums text-muted sm:text-[10px]">
-              {clock}
-            </p>
+
+            <div className="flex items-center gap-1.5">
+              <p className="text-[10px] font-medium tabular-nums text-ink/85 sm:text-[11px]">
+                {clock}
+              </p>
+
+              <button
+                type="button"
+                onClick={toggleSound}
+                aria-pressed={soundOn}
+                aria-label={
+                  soundOn
+                    ? "Turn tick sound off"
+                    : "Turn tick sound on"
+                }
+                className="cursor-pointer rounded text-[10px] leading-none opacity-60 transition-opacity duration-150 hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ink/40"
+              >
+                {soundOn ? "🔊" : "🔇"}
+              </button>
+            </div>
           </div>
         </div>
 
