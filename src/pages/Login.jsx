@@ -12,37 +12,57 @@ export default function Login({ onLogin }) {
 
     try {
       await signIn(email, password);
-      onLogin();
+      await onLogin();
     } catch {
       setError("Invalid email or password.");
     }
   }
 
   return (
-    <div>
-      <h2>Login</h2>
+    <div className="mx-auto max-w-sm py-12">
+      <h2 className="font-display text-3xl">
+        Login
+      </h2>
 
-      <form onSubmit={handleSubmit}>
+      <p className="mt-2 text-sm text-muted">
+        Sign in to manage inventory, purchases and meal tracking.
+      </p>
+
+      <form
+        onSubmit={handleSubmit}
+        className="mt-6 space-y-4"
+      >
         <input
           type="email"
+          required
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="w-full rounded-lg border border-line bg-surface px-4 py-3 outline-none focus:border-clay"
         />
 
         <input
           type="password"
+          required
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className="w-full rounded-lg border border-line bg-surface px-4 py-3 outline-none focus:border-clay"
         />
 
-        <button type="submit">
+        <button
+          type="submit"
+          className="w-full cursor-pointer rounded-lg bg-cream px-4 py-3 font-medium text-ink transition-all duration-150 hover:-translate-y-px hover:shadow-md"
+        >
           Login
         </button>
-      </form>
 
-      {error && <p>{error}</p>}
+        {error && (
+          <p className="text-sm text-clay">
+            {error}
+          </p>
+        )}
+      </form>
     </div>
   );
 }
