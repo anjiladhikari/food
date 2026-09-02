@@ -101,7 +101,14 @@ export function planFoodNames(rows) {
         if (/boiled eggs?/i.test(name)) name = "Eggs";
         if (/lite milk/i.test(name)) name = "Milk";
 
-        if (name) names.add(name);
+        // "Rolled Oats + 15g Chia" is two foods, not one item.
+        name.split(/\s*\+\s*/).forEach((part) => {
+          const food = part
+            .replace(/^\d+(?:\.\d+)?\s*(g|ml)?\s*/i, "")
+            .trim();
+
+          if (food) names.add(food);
+        });
       });
     });
   });

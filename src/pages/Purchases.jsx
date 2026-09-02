@@ -5,6 +5,7 @@ import {
 } from "../lib/purchases";
 import { addInventoryItem } from "../lib/inventory";
 import { SHEETS, planFoodNames, useSheet } from "../lib/sheets.js";
+import FoodSelect from "../components/FoodSelect.jsx";
 
 const FIELD =
   "w-full min-w-0 rounded-lg border border-line bg-cream px-3 py-2.5 text-[15px] text-ink outline-none transition-colors duration-150 placeholder:text-muted/70 focus:border-clay focus:ring-2 focus:ring-clay/25";
@@ -137,19 +138,12 @@ export default function Purchases({
         onSubmit={handleSubmit}
         className="mt-5 grid grid-cols-2 gap-2 rounded-2xl border border-line bg-surface p-4 sm:mt-6 sm:grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_5.5rem_auto] sm:gap-3 sm:p-5"
       >
-        <select
+        <FoodSelect
+          foods={foods}
           value={foodName}
-          onChange={(e) => setFoodName(e.target.value)}
-          className={"col-span-2 cursor-pointer sm:col-span-1 " + FIELD}
-        >
-          <option value="">Select food</option>
-
-          {foods.map((food) => (
-            <option key={food} value={food}>
-              {food}
-            </option>
-          ))}
-        </select>
+          onChange={setFoodName}
+          className="col-span-2 sm:col-span-1"
+        />
 
         <input
           type="number"
