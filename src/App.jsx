@@ -75,18 +75,27 @@ function handleTabChange(nextTab) {
 
   return (
     <div className="min-h-screen">
-      <header className="relative px-4 pb-4 pt-8 text-center sm:pt-10">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
-          {today}
-        </p>
-        <h1 className="mt-2 font-display text-3xl tracking-tight sm:text-4xl">
-          My Food Plan
-        </h1>
+      <header className="sticky top-0 z-20 flex items-center gap-2.5 border-b border-line/70 bg-cream px-3 py-2 sm:gap-4 sm:px-6">
+        <div className="shrink-0 border-r border-line pr-2.5 sm:pr-4">
+          <h1 className="font-display text-sm leading-tight tracking-tight whitespace-nowrap sm:text-lg">
+            My Food Plan
+          </h1>
+          <p className="text-[9px] uppercase tracking-[0.14em] text-muted sm:text-[10px]">
+            {today}
+          </p>
+        </div>
+
+        <Navigation
+          tabs={TABS}
+          active={tab}
+          onChange={handleTabChange}
+        />
+
         {user ? (
           <button
             type="button"
             onClick={handleLogout}
-            className="absolute right-4 top-4 cursor-pointer rounded-full border border-line px-3 py-2 text-sm text-muted transition-all duration-150 hover:border-cream hover:bg-cream hover:text-ink hover:shadow-md sm:right-6 sm:top-6"
+            className="ml-auto shrink-0 cursor-pointer rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-muted transition-all duration-150 hover:border-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-sm"
           >
             Logout
           </button>
@@ -94,18 +103,12 @@ function handleTabChange(nextTab) {
           <button
             type="button"
             onClick={() => setLoginRequested(true)}
-            className="absolute right-4 top-4 cursor-pointer rounded-full border border-line px-3 py-2 text-sm text-muted transition-all duration-150 hover:border-cream hover:bg-cream hover:text-ink hover:shadow-md sm:right-6 sm:top-6"
+            className="ml-auto shrink-0 cursor-pointer rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-muted transition-all duration-150 hover:border-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-sm"
           >
             Login
           </button>
         )}
       </header>
-      <Navigation
-        tabs={TABS}
-        active={tab}
-        onChange={handleTabChange}
-      />
-
       <main
         className={
           "mx-auto w-full pb-16 pt-6 sm:px-6 sm:pt-8 " +

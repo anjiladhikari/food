@@ -6,6 +6,16 @@ import {
   deleteInventoryItem,
 } from "../lib/inventory";
 
+const FIELD =
+  "w-full min-w-0 rounded-lg border border-line bg-cream px-3 py-2.5 text-[15px] text-ink outline-none transition-colors duration-150 placeholder:text-muted/70 focus:border-clay focus:ring-2 focus:ring-clay/25";
+
+const FOCUS =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream";
+
+const STEP_BUTTON =
+  "flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-line bg-cream text-base leading-none text-muted transition-all duration-150 hover:border-ink/40 hover:bg-ink/5 hover:text-ink active:translate-y-0 motion-safe:hover:-translate-y-px " +
+  FOCUS;
+
 export default function Inventory({ user, onRequireLogin }) {
   const [items, setItems] = useState([]);
   const [foodName, setFoodName] = useState("");
@@ -105,16 +115,19 @@ export default function Inventory({ user, onRequireLogin }) {
 
   return (
     <div>
-      <h2>Inventory</h2>
+      <h2 className="font-display text-3xl leading-tight sm:text-4xl">
+        Inventory
+      </h2>
 
       <form
         onSubmit={handleSubmit}
-        className="mt-4 flex flex-wrap gap-3"
+        className="mt-5 grid grid-cols-2 gap-2 rounded-2xl border border-line bg-surface p-4 sm:mt-6 sm:grid-cols-[minmax(0,1fr)_6rem_6rem_auto] sm:gap-3 sm:p-5"
       >
         <input
           value={foodName}
           onChange={(e) => setFoodName(e.target.value)}
           placeholder="Food name"
+          className={"col-span-2 sm:col-span-1 " + FIELD}
         />
 
         <input
@@ -123,24 +136,32 @@ export default function Inventory({ user, onRequireLogin }) {
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
           placeholder="Quantity"
+          className={FIELD}
         />
 
         <select
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
+          className={"cursor-pointer " + FIELD}
         >
           <option value="g">g</option>
           <option value="ml">ml</option>
           <option value="count">count</option>
         </select>
 
-        <button type="submit">
+        <button
+          type="submit"
+          className={
+            "col-span-2 cursor-pointer rounded-lg bg-ink px-5 py-2.5 text-sm font-medium text-cream transition-all duration-150 hover:shadow-md hover:shadow-black/30 active:translate-y-0 motion-safe:hover:-translate-y-px sm:col-span-1 " +
+            FOCUS
+          }
+        >
           Add
         </button>
       </form>
 
       {error && (
-        <p className="mt-3 text-sm text-clay">
+        <p className="mt-3 rounded-lg border border-clay/30 bg-clay/10 px-3 py-2 text-sm text-clay">
           {error}
         </p>
       )}
@@ -151,30 +172,39 @@ export default function Inventory({ user, onRequireLogin }) {
         </p>
       )}
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-5 space-y-2 sm:mt-6 sm:space-y-3">
         {items.map((item) => (
-          <div key={item.id}>
-            <strong>{item.food_name}</strong>
+          <div
+            key={item.id}
+            className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl border border-line bg-surface px-4 py-3"
+          >
+            <strong className="min-w-0 flex-1 truncate text-[15px] font-semibold">
+              {item.food_name}
+            </strong>
 
-            <div>
+            <div className="shrink-0 text-sm tabular-nums text-muted">
               {item.quantity} {item.unit}
             </div>
 
-            <div className="mt-1 flex gap-2">
+            <div className="ml-auto flex shrink-0 items-center gap-2">
               <button
                 type="button"
+                aria-label="Decrease quantity"
                 onClick={() =>
                   changeQuantity(item, -1)
                 }
+                className={STEP_BUTTON}
               >
                 −
               </button>
 
               <button
                 type="button"
+                aria-label="Increase quantity"
                 onClick={() =>
                   changeQuantity(item, 1)
                 }
+                className={STEP_BUTTON}
               >
                 +
               </button>
@@ -183,6 +213,10 @@ export default function Inventory({ user, onRequireLogin }) {
                 type="button"
                 onClick={() =>
                   removeItem(item.id)
+                }
+                className={
+                  "cursor-pointer rounded-full border border-line px-3 py-1.5 text-xs font-medium text-muted transition-all duration-150 hover:border-clay/50 hover:bg-clay/10 hover:text-clay active:translate-y-0 motion-safe:hover:-translate-y-px " +
+                  FOCUS
                 }
               >
                 Delete
