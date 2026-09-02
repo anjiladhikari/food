@@ -7,6 +7,7 @@ import {
 } from "../lib/inventory";
 import { SHEETS, planFoodNames, useSheet } from "../lib/sheets.js";
 import FoodSelect from "../components/FoodSelect.jsx";
+import UnitSelect from "../components/UnitSelect.jsx";
 
 const FIELD =
   "w-full min-w-0 rounded-lg border border-line bg-cream px-3 py-2.5 text-[15px] text-ink outline-none transition-colors duration-150 placeholder:text-muted/70 focus:border-clay focus:ring-2 focus:ring-clay/25";
@@ -149,26 +150,7 @@ export default function Inventory({ user, onRequireLogin }) {
           className={FIELD}
         />
 
-        <div className="relative">
-          <select
-            value={unit}
-            onChange={(e) => setUnit(e.target.value)}
-            className={
-              "cursor-pointer appearance-none pr-7 hover:border-ink/40 " +
-              FIELD
-            }
-          >
-            <option className="bg-surface text-ink" value="g">g</option>
-            <option className="bg-surface text-ink" value="ml">ml</option>
-            <option className="bg-surface text-ink" value="count">
-              count
-            </option>
-          </select>
-
-          <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-muted">
-            ▾
-          </span>
-        </div>
+        <UnitSelect value={unit} onChange={setUnit} />
 
         <button
           type="submit"
