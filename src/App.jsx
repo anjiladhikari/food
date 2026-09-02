@@ -75,7 +75,7 @@ function handleTabChange(nextTab) {
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-20 flex items-center gap-2.5 border-b border-line/70 bg-cream px-3 py-2 sm:gap-4 sm:px-6">
+      <header className="sticky top-0 z-20 flex items-center gap-2.5 border-b border-line/70 bg-cream px-3 py-1.5 sm:gap-4 sm:px-6 sm:py-2">
         <div className="shrink-0 border-r border-line pr-2.5 sm:pr-4">
           <h1 className="font-display text-sm leading-tight tracking-tight whitespace-nowrap sm:text-lg">
             My Food Plan

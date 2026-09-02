@@ -136,53 +136,86 @@ export default function Today({ user, onRequireLogin }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-          <button
-            type="button"
-            onClick={() => handleComplete("breakfast")}
-            disabled={completed.includes("breakfast")}
-            className={
-              MEAL_BUTTON +
-              (completed.includes("breakfast")
-                ? MEAL_BUTTON_DONE
-                : MEAL_BUTTON_TODO)
-            }
-          >
-            {completed.includes("breakfast")
-              ? "✓ Breakfast"
-              : "Breakfast"}
-          </button>
+          <span className="group relative inline-flex">
+            <button
+              type="button"
+              onClick={() => handleComplete("breakfast")}
+              disabled={completed.includes("breakfast")}
+              className={
+                MEAL_BUTTON +
+                (completed.includes("breakfast")
+                  ? MEAL_BUTTON_DONE
+                  : MEAL_BUTTON_TODO)
+              }
+            >
+              {completed.includes("breakfast")
+                ? "✓ Breakfast"
+                : "Breakfast"}
+            </button>
 
-          <button
-            type="button"
-            onClick={() => handleComplete("lunch")}
-            disabled={completed.includes("lunch")}
-            className={
-              MEAL_BUTTON +
-              (completed.includes("lunch")
-                ? MEAL_BUTTON_DONE
-                : MEAL_BUTTON_TODO)
-            }
-          >
-            {completed.includes("lunch")
-              ? "✓ Lunch"
-              : "Lunch"}
-          </button>
+            {!completed.includes("breakfast") && (
+              <span
+                role="tooltip"
+                className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 hidden w-52 -translate-x-1/2 rounded-lg border border-line bg-surface px-3 py-2 text-[11px] leading-snug text-muted shadow-md shadow-black/30 sm:group-focus-within:block sm:group-hover:block"
+              >
+                Have you finished breakfast? Click only after you have eaten it.
+              </span>
+            )}
+          </span>
 
-          <button
-            type="button"
-            onClick={() => handleComplete("dinner")}
-            disabled={completed.includes("dinner")}
-            className={
-              MEAL_BUTTON +
-              (completed.includes("dinner")
-                ? MEAL_BUTTON_DONE
-                : MEAL_BUTTON_TODO)
-            }
-          >
-            {completed.includes("dinner")
-              ? "✓ Dinner"
-              : "Dinner"}
-          </button>
+          <span className="group relative inline-flex">
+            <button
+              type="button"
+              onClick={() => handleComplete("lunch")}
+              disabled={completed.includes("lunch")}
+              className={
+                MEAL_BUTTON +
+                (completed.includes("lunch")
+                  ? MEAL_BUTTON_DONE
+                  : MEAL_BUTTON_TODO)
+              }
+            >
+              {completed.includes("lunch")
+                ? "✓ Lunch"
+                : "Lunch"}
+            </button>
+
+            {!completed.includes("lunch") && (
+              <span
+                role="tooltip"
+                className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 hidden w-52 -translate-x-1/2 rounded-lg border border-line bg-surface px-3 py-2 text-[11px] leading-snug text-muted shadow-md shadow-black/30 sm:group-focus-within:block sm:group-hover:block"
+              >
+                Have you finished lunch? Click only after you have eaten it.
+              </span>
+            )}
+          </span>
+
+          <span className="group relative inline-flex">
+            <button
+              type="button"
+              onClick={() => handleComplete("dinner")}
+              disabled={completed.includes("dinner")}
+              className={
+                MEAL_BUTTON +
+                (completed.includes("dinner")
+                  ? MEAL_BUTTON_DONE
+                  : MEAL_BUTTON_TODO)
+              }
+            >
+              {completed.includes("dinner")
+                ? "✓ Dinner"
+                : "Dinner"}
+            </button>
+
+            {!completed.includes("dinner") && (
+              <span
+                role="tooltip"
+                className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 hidden w-52 -translate-x-1/2 rounded-lg border border-line bg-surface px-3 py-2 text-[11px] leading-snug text-muted shadow-md shadow-black/30 sm:group-focus-within:block sm:group-hover:block"
+              >
+                Have you finished dinner? Click only after you have eaten it.
+              </span>
+            )}
+          </span>
         </div>
 
         <button
