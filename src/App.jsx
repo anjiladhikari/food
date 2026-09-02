@@ -22,12 +22,22 @@ const TABS = [
   { id: "purchases", label: "Purchases", Page: Purchases },
 ];
 
+function localTime() {
+  return new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+}
+
 export default function App() {
 
   const [tab, setTab] = useState("today");
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [loginRequested, setLoginRequested] = useState(false);
+  const [clock, setClock] = useState(() => localTime());
 
   // Warm the cache once per page session; every tab reuses these fetches.
   useEffect(() => {
@@ -35,6 +45,12 @@ export default function App() {
       getSheet(sheet).catch(() => { });
     });
   }, []);
+  useEffect(() => {
+    const id = setInterval(() => setClock(localTime()), 1000);
+
+    return () => clearInterval(id);
+  }, []);
+
   useEffect(() => {
     getUser()
       .then(setUser)
@@ -76,13 +92,19 @@ function handleTabChange(nextTab) {
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-20 flex items-center gap-2.5 border-b border-line/70 bg-cream px-3 py-1.5 sm:gap-4 sm:px-6 sm:py-2">
-        <div className="shrink-0 border-r border-line pr-2.5 sm:pr-4">
+        <div className="flex shrink-0 items-center gap-2.5 border-r border-line pr-2.5 sm:gap-3 sm:pr-4">
           <h1 className="font-display text-sm leading-tight tracking-tight whitespace-nowrap sm:text-lg">
             My Food Plan
           </h1>
-          <p className="text-[9px] uppercase tracking-[0.14em] text-muted sm:text-[10px]">
-            {today}
-          </p>
+
+          <div className="text-right leading-tight">
+            <p className="text-[9px] uppercase tracking-[0.14em] text-muted sm:text-[10px]">
+              {today}
+            </p>
+            <p className="text-[9px] tabular-nums text-muted sm:text-[10px]">
+              {clock}
+            </p>
+          </div>
         </div>
 
         <Navigation
