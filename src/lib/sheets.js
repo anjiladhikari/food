@@ -79,6 +79,43 @@ export function mealLines(text) {
     .filter(Boolean);
 }
 
+// The foods the meal plan actually names, parsed the same way a completed
+// meal is when it is deducted from inventory. Unique and alphabetical.
+export function planFoodNames(rows) {
+  const names = new Set();
+
+  (rows || []).forEach((row) => {
+    [1, 2, 3].forEach((column) => {
+      mealLines(row[column]).forEach((line) => {
+        const match = line.match(
+          /^(\d+(?:\.\d+)?)\s*(g|ml)?\s*(.+)$/i
+        );
+
+        if (!match) return;
+
+        let name = match[3]
+          .replace(/\(dry\)/gi, "")
+          .replace(/\(in springwater\)/gi, "")
+          .trim();
+
+        if (/boiled eggs?/i.test(name)) name = "Eggs";
+        if (/lite milk/i.test(name)) name = "Milk";
+
+        // "Rolled Oats + 15g Chia" is two foods, not one item.
+        name.split(/\s*\+\s*/).forEach((part) => {
+          const food = part
+            .replace(/^\d+(?:\.\d+)?\s*(g|ml)?\s*/i, "")
+            .trim();
+
+          if (food) names.add(food);
+        });
+      });
+    });
+  });
+
+  return [...names].sort((a, b) => a.localeCompare(b));
+}
+
 // Monday = Day 1 ... Sunday = Day 7
 export function getTodayIndex() {
   const day = new Date().getDay();
