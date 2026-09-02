@@ -1,6 +1,10 @@
 export default function Footer() {
   return (
   <footer className="px-4 pb-10 text-center text-xs text-muted">
+    <p className="mx-auto mb-3 max-w-xl leading-relaxed">
+      A responsive weekly meal planner for viewing daily meals, weekly plans,
+      shopping information and cooking instructions.
+    </p>
     © 2026{" "}
     <a
       href="https://anjiladhikari.com.np"

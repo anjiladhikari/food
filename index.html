@@ -4,10 +4,58 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#141210" />
-    <title>My Food Plan</title>
+
+    <title>Simple Weekly Meal Planner | My Food Plan</title>
+    <meta
+      name="description"
+      content="A simple weekly meal planner: see today's meals, browse the week's plan, check what to buy and follow short cooking instructions for each food."
+    />
+    <link rel="canonical" href="https://anjiladhikari.github.io/food/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="My Food Plan" />
+    <meta property="og:title" content="Simple Weekly Meal Planner | My Food Plan" />
+    <meta
+      property="og:description"
+      content="A simple weekly meal planner: see today's meals, browse the week's plan, check what to buy and follow short cooking instructions for each food."
+    />
+    <meta property="og:url" content="https://anjiladhikari.github.io/food/" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Simple Weekly Meal Planner | My Food Plan" />
+    <meta
+      name="twitter:description"
+      content="A simple weekly meal planner: see today's meals, browse the week's plan, check what to buy and follow short cooking instructions for each food."
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "My Food Plan",
+        "url": "https://anjiladhikari.github.io/food/",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "Any modern web browser",
+        "browserRequirements": "Requires JavaScript",
+        "description": "A responsive weekly meal planner for viewing daily meals, weekly plans, shopping information and cooking instructions.",
+        "author": {
+          "@type": "Person",
+          "name": "Geeky Anjil",
+          "url": "https://anjiladhikari.com.np"
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <h1>My Food Plan</h1>
+      <p>
+        My Food Plan is a responsive weekly meal planner for viewing daily
+        meals, weekly plans, shopping information and cooking instructions.
+        JavaScript is required to load the plan.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

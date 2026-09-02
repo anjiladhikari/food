@@ -74,7 +74,9 @@ export default function Week() {
                 <p className="text-[9px] leading-tight font-semibold uppercase tracking-[0.08em] break-words text-clay sm:text-[11px] sm:tracking-[0.14em]">
                   {dayLabel(offset)}
                 </p>
-                <p className="mt-0.5 font-display text-sm sm:text-xl">{row[0]}</p>
+                <h3 className="mt-0.5 font-display text-sm sm:text-xl">
+                  {row[0]}
+                </h3>
               </div>
 
               <MealCard
