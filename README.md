@@ -4,7 +4,7 @@
 
 **A personal meal planner that turns a Google Sheet into a readable, responsive web app.**
 
-### [ ▶ See Live Demo ](https://anjiladhikari.github.io/food/)
+### [ ▶ See Live Demo ](https://anjiladhikari.github.io/food_planner/)
 
 <br>
 
@@ -108,7 +108,7 @@ State is plain React `useState` — no router, no store.
 | Build tool | Vite 7 |
 | Styling | Tailwind CSS 4 |
 | Data source | Google Sheets |
-| Hosting | GitHub Pages (`/food/` base path) |
+| Hosting | GitHub Pages (`/food_planner/` base path) |
 | CI/CD | GitHub Actions |
 
 ---
