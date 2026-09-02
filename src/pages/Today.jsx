@@ -14,7 +14,7 @@ import {
 } from "../lib/meals.js";
 
 const MEAL_BUTTON =
-  "rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-sm ";
+  "rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-[13px] ";
 
 const MEAL_BUTTON_DONE =
   "cursor-default border-olive/40 bg-olive/10 text-olive";
@@ -124,18 +124,18 @@ export default function Today({ user, onRequireLogin }) {
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 sm:gap-x-4">
-        <div className="shrink-0 sm:border-r sm:border-line sm:pr-4">
+      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 sm:gap-x-3">
+        <div className="flex shrink-0 items-baseline gap-2 sm:border-r sm:border-line sm:pr-3">
           <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-clay sm:text-[11px]">
             {dayLabel(offset)}
           </p>
 
-          <h2 className="font-display text-xl leading-tight tracking-tight sm:text-2xl">
+          <h2 className="font-display text-base leading-tight tracking-tight sm:text-lg">
             {row[0]}
           </h2>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
           <span className="group relative inline-flex">
             <button
               type="button"
@@ -223,7 +223,7 @@ export default function Today({ user, onRequireLogin }) {
           onClick={() =>
             setOffset((value) => (value + 1) % 7)
           }
-          className="ml-auto shrink-0 cursor-pointer rounded-full border border-line bg-surface px-3.5 py-1.5 text-[13px] font-medium transition-all duration-150 hover:border-ink hover:bg-ink hover:text-cream hover:shadow-md hover:shadow-black/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream active:translate-y-0 motion-safe:hover:-translate-y-px sm:text-sm"
+          className="ml-auto shrink-0 cursor-pointer rounded-full border border-line bg-surface px-2.5 py-0.5 text-[11px] font-medium transition-all duration-150 hover:border-ink hover:bg-ink hover:text-cream hover:shadow-md hover:shadow-black/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream active:translate-y-0 motion-safe:hover:-translate-y-px sm:text-[13px]"
         >
           Next →
         </button>
