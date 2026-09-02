@@ -29,16 +29,17 @@ function playTick(context) {
   const gain = context.createGain();
   const now = context.currentTime;
 
-  oscillator.type = "sine";
-  oscillator.frequency.value = 1200;
+  oscillator.type = "triangle";
+  oscillator.frequency.setValueAtTime(2000, now);
+  oscillator.frequency.exponentialRampToValueAtTime(900, now + 0.02);
 
   gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(0.015, now + 0.001);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.03);
+  gain.gain.exponentialRampToValueAtTime(0.18, now + 0.001);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.025);
 
   oscillator.connect(gain).connect(context.destination);
   oscillator.start(now);
-  oscillator.stop(now + 0.04);
+  oscillator.stop(now + 0.035);
 }
 
 function localTime() {
@@ -57,8 +58,8 @@ export default function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const [loginRequested, setLoginRequested] = useState(false);
   const [clock, setClock] = useState(() => localTime());
-  const [soundOn, setSoundOn] = useState(false);
-  const soundOnRef = useRef(false);
+  const [soundOn, setSoundOn] = useState(true);
+  const soundOnRef = useRef(true);
   const audioRef = useRef(null);
 
   // Warm the cache once per page session; every tab reuses these fetches.
@@ -68,6 +69,19 @@ export default function App() {
     });
   }, []);
   useEffect(() => {
+    // Browsers hold audio until the first gesture; start on whatever it is.
+    function enableAudio() {
+      if (!audioRef.current) {
+        audioRef.current = new (window.AudioContext ||
+          window.webkitAudioContext)();
+      }
+
+      audioRef.current.resume();
+    }
+
+    window.addEventListener("pointerdown", enableAudio, { once: true });
+    window.addEventListener("keydown", enableAudio, { once: true });
+
     const id = setInterval(() => {
       setClock(localTime());
 
@@ -76,6 +90,8 @@ export default function App() {
 
     return () => {
       clearInterval(id);
+      window.removeEventListener("pointerdown", enableAudio);
+      window.removeEventListener("keydown", enableAudio);
       audioRef.current?.close();
       audioRef.current = null;
     };
