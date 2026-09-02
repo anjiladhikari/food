@@ -32,11 +32,12 @@ export default function Week() {
 
   return (
     <>
-      <h2 className="font-display text-3xl leading-tight sm:text-4xl">
-        Weekly Plan
-      </h2>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 sm:gap-x-4">
+        <h2 className="shrink-0 font-display text-xl leading-tight tracking-tight sm:border-r sm:border-line sm:pr-4 sm:text-2xl">
+          Weekly Plan
+        </h2>
 
-      <div className="mt-4 flex flex-wrap gap-2 sm:mt-5">
+        <div className="flex min-w-0 flex-1 flex-wrap gap-1.5 sm:gap-2">
         {allOffsets.map((offset) => {
           const isActive = offset === startOffset;
 
@@ -46,7 +47,7 @@ export default function Week() {
               type="button"
               onClick={() => setStartOffset(offset)}
               className={
-                "cursor-pointer rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream active:translate-y-0 motion-safe:hover:-translate-y-px sm:text-sm " +
+                "cursor-pointer rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream active:translate-y-0 motion-safe:hover:-translate-y-px sm:text-[13px] " +
                 (isActive
                   ? "border-ink bg-ink text-cream"
                   : "border-line bg-surface text-muted hover:border-ink/40 hover:bg-ink/5 hover:text-ink")
@@ -56,9 +57,10 @@ export default function Week() {
             </button>
           );
         })}
+        </div>
       </div>
 
-      <div className="mt-5 grid grid-cols-4 gap-1.5 sm:mt-7 sm:gap-4">
+      <div className="mt-4 grid grid-cols-4 gap-1.5 sm:mt-6 sm:gap-4">
         {visibleOffsets.map((offset) => {
           const row = rowFor(offset);
 

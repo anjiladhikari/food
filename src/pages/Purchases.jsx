@@ -5,6 +5,12 @@ import {
 } from "../lib/purchases";
 import { addInventoryItem } from "../lib/inventory";
 
+const FIELD =
+  "w-full min-w-0 rounded-lg border border-line bg-cream px-3 py-2.5 text-[15px] text-ink outline-none transition-colors duration-150 placeholder:text-muted/70 focus:border-clay focus:ring-2 focus:ring-clay/25";
+
+const FOCUS =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream";
+
 export default function Purchases({
   user,
   onRequireLogin,
@@ -114,11 +120,13 @@ export default function Purchases({
 
   return (
     <div>
-      <h2>Purchases</h2>
+      <h2 className="font-display text-3xl leading-tight sm:text-4xl">
+        Purchases
+      </h2>
 
       <form
         onSubmit={handleSubmit}
-        className="mt-4 flex flex-wrap gap-3"
+        className="mt-5 grid grid-cols-2 gap-2 rounded-2xl border border-line bg-surface p-4 sm:mt-6 sm:grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_5.5rem_auto] sm:gap-3 sm:p-5"
       >
         <input
           placeholder="Food name"
@@ -126,6 +134,7 @@ export default function Purchases({
           onChange={(e) =>
             setFoodName(e.target.value)
           }
+          className={"col-span-2 sm:col-span-1 " + FIELD}
         />
 
         <input
@@ -136,6 +145,7 @@ export default function Purchases({
           onChange={(e) =>
             setQuantity(e.target.value)
           }
+          className={FIELD}
         />
 
         <select
@@ -143,6 +153,7 @@ export default function Purchases({
           onChange={(e) =>
             setUnit(e.target.value)
           }
+          className={"cursor-pointer " + FIELD}
         >
           <option value="g">g</option>
           <option value="ml">ml</option>
@@ -160,38 +171,65 @@ export default function Purchases({
           onChange={(e) =>
             setPrice(e.target.value)
           }
+          className={"col-span-2 sm:col-span-1 " + FIELD}
         />
 
-        <button type="submit">
+        <button
+          type="submit"
+          className={
+            "col-span-2 cursor-pointer rounded-lg bg-ink px-5 py-2.5 text-sm font-medium whitespace-nowrap text-cream transition-all duration-150 hover:shadow-md hover:shadow-black/30 active:translate-y-0 motion-safe:hover:-translate-y-px sm:col-span-1 " +
+            FOCUS
+          }
+        >
           Add Purchase
         </button>
       </form>
 
-      <div className="mt-4">
-        <div>
-          <strong>This week:</strong>{" "}
-          ${weekTotal.toFixed(2)}
+      <div className="mt-5 grid grid-cols-2 gap-2 sm:gap-3">
+        <div className="rounded-xl border border-line bg-surface px-4 py-3">
+          <strong className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+            This week
+          </strong>{" "}
+          <span className="mt-1 block font-display text-2xl tabular-nums sm:text-3xl">
+            ${weekTotal.toFixed(2)}
+          </span>
         </div>
 
-        <div>
-          <strong>This month:</strong>{" "}
-          ${monthTotal.toFixed(2)}
+        <div className="rounded-xl border border-line bg-surface px-4 py-3">
+          <strong className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+            This month
+          </strong>{" "}
+          <span className="mt-1 block font-display text-2xl tabular-nums sm:text-3xl">
+            ${monthTotal.toFixed(2)}
+          </span>
         </div>
       </div>
 
       {error && (
-        <p className="mt-3 text-sm text-clay">
+        <p className="mt-3 rounded-lg border border-clay/30 bg-clay/10 px-3 py-2 text-sm text-clay">
           {error}
         </p>
       )}
 
-      <div className="mt-6 space-y-2">
+      <div className="mt-5 space-y-2 sm:mt-6">
         {purchases.map((purchase) => (
-          <div key={purchase.id}>
-            {purchase.food_name} —{" "}
-            {purchase.quantity}{" "}
-            {purchase.unit} — $
-            {Number(purchase.price).toFixed(2)}
+          <div
+            key={purchase.id}
+            className="flex items-baseline gap-3 rounded-xl border border-line bg-surface px-4 py-3"
+          >
+            <span className="min-w-0 flex-1 truncate text-[15px]">
+              {purchase.food_name}
+            </span>
+
+            <span className="shrink-0 text-sm tabular-nums text-muted">
+              {purchase.quantity}{" "}
+              {purchase.unit}
+            </span>
+
+            <span className="shrink-0 font-medium tabular-nums text-clay">
+              $
+              {Number(purchase.price).toFixed(2)}
+            </span>
           </div>
         ))}
       </div>

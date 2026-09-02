@@ -3,30 +3,28 @@ const FOCUS_RING =
 
 export default function Navigation({ tabs, active, onChange }) {
   return (
-    <div className="sticky top-0 z-20 border-b border-line/70 bg-cream px-4 pb-3 pt-2 sm:pb-4">
-      <nav className="mx-auto flex w-full max-w-md gap-1 rounded-full border border-line bg-surface p-1">
-        {tabs.map((tab) => {
-          const isActive = tab.id === active;
+    <nav className="flex min-w-0 flex-1 gap-2.5 overflow-x-auto sm:justify-center sm:gap-6">
+      {tabs.map((tab) => {
+        const isActive = tab.id === active;
 
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => onChange(tab.id)}
-              aria-current={isActive ? "page" : undefined}
-              className={
-                "flex-1 cursor-pointer rounded-full px-2 py-2 text-[13px] font-medium transition-all duration-150 sm:text-sm " +
-                FOCUS_RING +
-                (isActive
-                  ? "bg-ink text-cream"
-                  : "text-muted hover:bg-ink/5 hover:text-ink")
-              }
-            >
-              {tab.label}
-            </button>
-          );
-        })}
-      </nav>
-    </div>
+        return (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => onChange(tab.id)}
+            aria-current={isActive ? "page" : undefined}
+            className={
+              "min-w-fit shrink-0 cursor-pointer rounded-sm border-b-2 px-0.5 py-1 text-[11px] font-medium whitespace-nowrap transition-colors duration-150 sm:text-[13px] " +
+              FOCUS_RING +
+              (isActive
+                ? "border-ink text-ink"
+                : "border-transparent text-muted hover:border-line hover:text-ink")
+            }
+          >
+            {tab.label}
+          </button>
+        );
+      })}
+    </nav>
   );
 }

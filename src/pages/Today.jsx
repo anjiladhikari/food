@@ -13,6 +13,15 @@ import {
   completeMeal,
 } from "../lib/meals.js";
 
+const MEAL_BUTTON =
+  "rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-[13px] ";
+
+const MEAL_BUTTON_DONE =
+  "cursor-default border-olive/40 bg-olive/10 text-olive";
+
+const MEAL_BUTTON_TODO =
+  "cursor-pointer border-line bg-surface text-muted hover:border-ink/40 hover:bg-ink/5 hover:text-ink active:translate-y-0 motion-safe:hover:-translate-y-px";
+
 export default function Today({ user, onRequireLogin }) {
   const { rows, error, loading } = useSheet(SHEETS.plan);
   const [offset, setOffset] = useState(0);
@@ -115,15 +124,98 @@ export default function Today({ user, onRequireLogin }) {
 
   return (
     <>
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-clay">
+      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 sm:gap-x-3">
+        <div className="flex shrink-0 items-baseline gap-2 sm:border-r sm:border-line sm:pr-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-clay sm:text-[11px]">
             {dayLabel(offset)}
           </p>
 
-          <h2 className="mt-1 font-display text-3xl leading-tight sm:text-4xl">
+          <h2 className="font-display text-base leading-tight tracking-tight sm:text-lg">
             {row[0]}
           </h2>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
+          <span className="group relative inline-flex">
+            <button
+              type="button"
+              onClick={() => handleComplete("breakfast")}
+              disabled={completed.includes("breakfast")}
+              className={
+                MEAL_BUTTON +
+                (completed.includes("breakfast")
+                  ? MEAL_BUTTON_DONE
+                  : MEAL_BUTTON_TODO)
+              }
+            >
+              {completed.includes("breakfast")
+                ? "✓ Breakfast"
+                : "Breakfast"}
+            </button>
+
+            {!completed.includes("breakfast") && (
+              <span
+                role="tooltip"
+                className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 hidden w-52 -translate-x-1/2 rounded-lg border border-line bg-surface px-3 py-2 text-[11px] leading-snug text-muted shadow-md shadow-black/30 sm:group-focus-within:block sm:group-hover:block"
+              >
+                Have you finished breakfast? Click only after you have eaten it.
+              </span>
+            )}
+          </span>
+
+          <span className="group relative inline-flex">
+            <button
+              type="button"
+              onClick={() => handleComplete("lunch")}
+              disabled={completed.includes("lunch")}
+              className={
+                MEAL_BUTTON +
+                (completed.includes("lunch")
+                  ? MEAL_BUTTON_DONE
+                  : MEAL_BUTTON_TODO)
+              }
+            >
+              {completed.includes("lunch")
+                ? "✓ Lunch"
+                : "Lunch"}
+            </button>
+
+            {!completed.includes("lunch") && (
+              <span
+                role="tooltip"
+                className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 hidden w-52 -translate-x-1/2 rounded-lg border border-line bg-surface px-3 py-2 text-[11px] leading-snug text-muted shadow-md shadow-black/30 sm:group-focus-within:block sm:group-hover:block"
+              >
+                Have you finished lunch? Click only after you have eaten it.
+              </span>
+            )}
+          </span>
+
+          <span className="group relative inline-flex">
+            <button
+              type="button"
+              onClick={() => handleComplete("dinner")}
+              disabled={completed.includes("dinner")}
+              className={
+                MEAL_BUTTON +
+                (completed.includes("dinner")
+                  ? MEAL_BUTTON_DONE
+                  : MEAL_BUTTON_TODO)
+              }
+            >
+              {completed.includes("dinner")
+                ? "✓ Dinner"
+                : "Dinner"}
+            </button>
+
+            {!completed.includes("dinner") && (
+              <span
+                role="tooltip"
+                className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 hidden w-52 -translate-x-1/2 rounded-lg border border-line bg-surface px-3 py-2 text-[11px] leading-snug text-muted shadow-md shadow-black/30 sm:group-focus-within:block sm:group-hover:block"
+              >
+                Have you finished dinner? Click only after you have eaten it.
+              </span>
+            )}
+          </span>
         </div>
 
         <button
@@ -131,39 +223,9 @@ export default function Today({ user, onRequireLogin }) {
           onClick={() =>
             setOffset((value) => (value + 1) % 7)
           }
-          className="mt-1 shrink-0 cursor-pointer rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium"
+          className="ml-auto shrink-0 cursor-pointer rounded-full border border-line bg-surface px-2.5 py-0.5 text-[11px] font-medium transition-all duration-150 hover:border-ink hover:bg-ink hover:text-cream hover:shadow-md hover:shadow-black/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream active:translate-y-0 motion-safe:hover:-translate-y-px sm:text-[13px]"
         >
           Next →
-        </button>
-      </div>
-
-      {/* Meal completion buttons */}
-      <div className="mt-5 flex flex-wrap gap-2">
-        <button
-          onClick={() => handleComplete("breakfast")}
-          disabled={completed.includes("breakfast")}
-        >
-          {completed.includes("breakfast")
-            ? "✓ Breakfast"
-            : "Breakfast"}
-        </button>
-
-        <button
-          onClick={() => handleComplete("lunch")}
-          disabled={completed.includes("lunch")}
-        >
-          {completed.includes("lunch")
-            ? "✓ Lunch"
-            : "Lunch"}
-        </button>
-
-        <button
-          onClick={() => handleComplete("dinner")}
-          disabled={completed.includes("dinner")}
-        >
-          {completed.includes("dinner")
-            ? "✓ Dinner"
-            : "Dinner"}
         </button>
       </div>
 

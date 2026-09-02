@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navigation from "./components/Navigation.jsx";
 import Footer from "./components/Footer.jsx";
 import Today from "./pages/Today.jsx";
@@ -22,12 +22,45 @@ const TABS = [
   { id: "purchases", label: "Purchases", Page: Purchases },
 ];
 
+function playTick(context) {
+  if (!context || context.state !== "running") return;
+
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  const now = context.currentTime;
+
+  oscillator.type = "triangle";
+  oscillator.frequency.setValueAtTime(2000, now);
+  oscillator.frequency.exponentialRampToValueAtTime(900, now + 0.02);
+
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.22, now + 0.001);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.025);
+
+  oscillator.connect(gain).connect(context.destination);
+  oscillator.start(now);
+  oscillator.stop(now + 0.035);
+}
+
+function localTime() {
+  return new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+}
+
 export default function App() {
 
   const [tab, setTab] = useState("today");
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [loginRequested, setLoginRequested] = useState(false);
+  const [clock, setClock] = useState(() => localTime());
+  const [soundOn, setSoundOn] = useState(true);
+  const soundOnRef = useRef(true);
+  const audioRef = useRef(null);
 
   // Warm the cache once per page session; every tab reuses these fetches.
   useEffect(() => {
@@ -35,6 +68,62 @@ export default function App() {
       getSheet(sheet).catch(() => { });
     });
   }, []);
+  useEffect(() => {
+    // Browsers hold audio until the first gesture; unlock on whatever it is
+    // and keep listening until the context is confirmed running.
+    function enableAudio() {
+      if (!audioRef.current) {
+        audioRef.current = new (window.AudioContext ||
+          window.webkitAudioContext)();
+      }
+
+      audioRef.current
+        .resume()
+        .then(() => {
+          if (audioRef.current?.state !== "running") return;
+
+          document.removeEventListener("pointerdown", enableAudio);
+          document.removeEventListener("keydown", enableAudio);
+
+          if (soundOnRef.current) playTick(audioRef.current);
+        })
+        .catch(() => { });
+    }
+
+    document.addEventListener("pointerdown", enableAudio);
+    document.addEventListener("keydown", enableAudio);
+
+    const id = setInterval(() => {
+      setClock(localTime());
+
+      if (soundOnRef.current) playTick(audioRef.current);
+    }, 1000);
+
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("pointerdown", enableAudio);
+      document.removeEventListener("keydown", enableAudio);
+      audioRef.current?.close();
+      audioRef.current = null;
+    };
+  }, []);
+
+  function toggleSound() {
+    const next = !soundOn;
+
+    setSoundOn(next);
+    soundOnRef.current = next;
+
+    if (next) {
+      if (!audioRef.current) {
+        audioRef.current = new (window.AudioContext ||
+          window.webkitAudioContext)();
+      }
+
+      audioRef.current.resume();
+    }
+  }
+
   useEffect(() => {
     getUser()
       .then(setUser)
@@ -75,18 +164,50 @@ function handleTabChange(nextTab) {
 
   return (
     <div className="min-h-screen">
-      <header className="relative px-4 pb-4 pt-8 text-center sm:pt-10">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
-          {today}
-        </p>
-        <h1 className="mt-2 font-display text-3xl tracking-tight sm:text-4xl">
-          My Food Plan
-        </h1>
+      <header className="sticky top-0 z-20 flex items-center gap-2.5 border-b border-line/70 bg-cream px-3 py-1.5 sm:gap-4 sm:px-6 sm:py-2">
+        <div className="flex shrink-0 items-center gap-2.5 border-r border-line pr-2.5 sm:gap-3 sm:pr-4">
+          <h1 className="font-display text-sm leading-tight tracking-tight whitespace-nowrap sm:text-lg">
+            My Food Plan
+          </h1>
+
+          <div className="rounded-md border-l border-line bg-surface px-2 py-0.5 text-left leading-tight">
+            <p className="text-[9px] uppercase tracking-[0.14em] text-muted sm:text-[10px]">
+              {today}
+            </p>
+
+            <div className="flex items-center gap-1.5">
+              <p className="text-[10px] font-medium tabular-nums text-ink/85 sm:text-[11px]">
+                {clock}
+              </p>
+
+              <button
+                type="button"
+                onClick={toggleSound}
+                aria-pressed={soundOn}
+                aria-label={
+                  soundOn
+                    ? "Turn tick sound off"
+                    : "Turn tick sound on"
+                }
+                className="cursor-pointer rounded text-[10px] leading-none opacity-60 transition-opacity duration-150 hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ink/40"
+              >
+                {soundOn ? "🔊" : "🔇"}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <Navigation
+          tabs={TABS}
+          active={tab}
+          onChange={handleTabChange}
+        />
+
         {user ? (
           <button
             type="button"
             onClick={handleLogout}
-            className="absolute right-4 top-4 cursor-pointer rounded-full border border-line px-3 py-2 text-sm text-muted transition-all duration-150 hover:border-cream hover:bg-cream hover:text-ink hover:shadow-md sm:right-6 sm:top-6"
+            className="ml-auto shrink-0 cursor-pointer rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-muted transition-all duration-150 hover:border-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-sm"
           >
             Logout
           </button>
@@ -94,18 +215,12 @@ function handleTabChange(nextTab) {
           <button
             type="button"
             onClick={() => setLoginRequested(true)}
-            className="absolute right-4 top-4 cursor-pointer rounded-full border border-line px-3 py-2 text-sm text-muted transition-all duration-150 hover:border-cream hover:bg-cream hover:text-ink hover:shadow-md sm:right-6 sm:top-6"
+            className="ml-auto shrink-0 cursor-pointer rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-muted transition-all duration-150 hover:border-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-sm"
           >
             Login
           </button>
         )}
       </header>
-      <Navigation
-        tabs={TABS}
-        active={tab}
-        onChange={handleTabChange}
-      />
-
       <main
         className={
           "mx-auto w-full pb-16 pt-6 sm:px-6 sm:pt-8 " +
