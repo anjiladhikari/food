@@ -156,19 +156,28 @@ export default function Purchases({
           className={FIELD}
         />
 
-        <select
-          value={unit}
-          onChange={(e) =>
-            setUnit(e.target.value)
-          }
-          className={"cursor-pointer " + FIELD}
-        >
-          <option value="g">g</option>
-          <option value="ml">ml</option>
-          <option value="count">
-            count
-          </option>
-        </select>
+        <div className="relative">
+          <select
+            value={unit}
+            onChange={(e) =>
+              setUnit(e.target.value)
+            }
+            className={
+              "cursor-pointer appearance-none pr-7 hover:border-ink/40 " +
+              FIELD
+            }
+          >
+            <option className="bg-surface text-ink" value="g">g</option>
+            <option className="bg-surface text-ink" value="ml">ml</option>
+            <option className="bg-surface text-ink" value="count">
+              count
+            </option>
+          </select>
+
+          <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-muted">
+            ▾
+          </span>
+        </div>
 
         <input
           type="number"
