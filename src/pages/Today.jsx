@@ -3,8 +3,8 @@ import MealCard from "../components/MealCard.jsx";
 import { deductInventoryItem } from "../lib/inventory.js";
 import {
   SHEETS,
-  dayLabel,
   getTodayIndex,
+  getWeekdayName,
   mealLines,
   useSheet,
 } from "../lib/sheets.js";
@@ -21,6 +21,9 @@ const MEAL_BUTTON_DONE =
 
 const MEAL_BUTTON_TODO =
   "cursor-pointer border-line bg-surface text-muted hover:border-ink/40 hover:bg-ink/5 hover:text-ink active:translate-y-0 motion-safe:hover:-translate-y-px";
+
+const NAV_BUTTON =
+  "shrink-0 cursor-pointer rounded-full border border-line bg-surface px-2.5 py-0.5 text-[11px] font-medium transition-all duration-150 hover:border-ink hover:bg-ink hover:text-cream hover:shadow-md hover:shadow-black/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream active:translate-y-0 motion-safe:hover:-translate-y-px sm:text-[13px]";
 
 export default function Today({ user, onRequireLogin }) {
   const { rows, error, loading } = useSheet(SHEETS.plan);
@@ -119,15 +122,28 @@ export default function Today({ user, onRequireLogin }) {
     );
   }
 
-  const row =
-    rows[(getTodayIndex() + offset) % rows.length];
+  const index = (getTodayIndex() + offset) % rows.length;
+
+  const row = rows[index];
+  const previousRow = rows[(index - 1 + rows.length) % rows.length];
+  const nextRow = rows[(index + 1) % rows.length];
 
   return (
     <>
       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 sm:gap-x-3">
+        <button
+          type="button"
+          onClick={() =>
+            setOffset((value) => (value + 6) % 7)
+          }
+          className={NAV_BUTTON}
+        >
+          ← {previousRow[0]}
+        </button>
+
         <div className="flex shrink-0 items-baseline gap-2 sm:border-r sm:border-line sm:pr-3">
           <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-clay sm:text-[11px]">
-            {dayLabel(offset)}
+            {getWeekdayName(offset)} ·
           </p>
 
           <h2 className="font-display text-base leading-tight tracking-tight sm:text-lg">
@@ -223,9 +239,9 @@ export default function Today({ user, onRequireLogin }) {
           onClick={() =>
             setOffset((value) => (value + 1) % 7)
           }
-          className="ml-auto shrink-0 cursor-pointer rounded-full border border-line bg-surface px-2.5 py-0.5 text-[11px] font-medium transition-all duration-150 hover:border-ink hover:bg-ink hover:text-cream hover:shadow-md hover:shadow-black/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream active:translate-y-0 motion-safe:hover:-translate-y-px sm:text-[13px]"
+          className={"ml-auto " + NAV_BUTTON}
         >
-          Next →
+          {nextRow[0]} →
         </button>
       </div>
 
