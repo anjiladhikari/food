@@ -34,7 +34,7 @@ function playTick(context) {
   oscillator.frequency.exponentialRampToValueAtTime(900, now + 0.02);
 
   gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(0.18, now + 0.001);
+  gain.gain.exponentialRampToValueAtTime(0.22, now + 0.001);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.025);
 
   oscillator.connect(gain).connect(context.destination);
@@ -69,18 +69,29 @@ export default function App() {
     });
   }, []);
   useEffect(() => {
-    // Browsers hold audio until the first gesture; start on whatever it is.
+    // Browsers hold audio until the first gesture; unlock on whatever it is
+    // and keep listening until the context is confirmed running.
     function enableAudio() {
       if (!audioRef.current) {
         audioRef.current = new (window.AudioContext ||
           window.webkitAudioContext)();
       }
 
-      audioRef.current.resume();
+      audioRef.current
+        .resume()
+        .then(() => {
+          if (audioRef.current?.state !== "running") return;
+
+          document.removeEventListener("pointerdown", enableAudio);
+          document.removeEventListener("keydown", enableAudio);
+
+          if (soundOnRef.current) playTick(audioRef.current);
+        })
+        .catch(() => { });
     }
 
-    window.addEventListener("pointerdown", enableAudio, { once: true });
-    window.addEventListener("keydown", enableAudio, { once: true });
+    document.addEventListener("pointerdown", enableAudio);
+    document.addEventListener("keydown", enableAudio);
 
     const id = setInterval(() => {
       setClock(localTime());
@@ -90,8 +101,8 @@ export default function App() {
 
     return () => {
       clearInterval(id);
-      window.removeEventListener("pointerdown", enableAudio);
-      window.removeEventListener("keydown", enableAudio);
+      document.removeEventListener("pointerdown", enableAudio);
+      document.removeEventListener("keydown", enableAudio);
       audioRef.current?.close();
       audioRef.current = null;
     };
