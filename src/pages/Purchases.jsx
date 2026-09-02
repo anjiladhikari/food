@@ -129,6 +129,26 @@ export default function Purchases({
       0
     );
 
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+  const yearTotal = purchases
+    .filter(
+      (purchase) =>
+        new Date(purchase.purchased_at) >=
+        startOfYear
+    )
+    .reduce(
+      (total, purchase) =>
+        total + Number(purchase.price),
+      0
+    );
+
+  const totalSpent = purchases.reduce(
+    (total, purchase) =>
+      total + Number(purchase.price),
+    0
+  );
+
   return (
     <div>
       <h2 className="font-display text-3xl leading-tight sm:text-4xl">
@@ -198,6 +218,24 @@ export default function Purchases({
           </strong>{" "}
           <span className="mt-1 block font-display text-2xl tabular-nums sm:text-3xl">
             ${monthTotal.toFixed(2)}
+          </span>
+        </div>
+
+        <div className="rounded-xl border border-line bg-surface px-4 py-3">
+          <strong className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+            This year
+          </strong>{" "}
+          <span className="mt-1 block font-display text-2xl tabular-nums sm:text-3xl">
+            ${yearTotal.toFixed(2)}
+          </span>
+        </div>
+
+        <div className="rounded-xl border border-line bg-surface px-4 py-3">
+          <strong className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+            Total
+          </strong>{" "}
+          <span className="mt-1 block font-display text-2xl tabular-nums sm:text-3xl">
+            ${totalSpent.toFixed(2)}
           </span>
         </div>
       </div>
