@@ -21,7 +21,6 @@ const TABS = [
   { id: "inventory", label: "Inventory", Page: Inventory },
   { id: "purchases", label: "Purchases", Page: Purchases },
 ];
-const PROTECTED_TABS = ["inventory", "purchases"];
 
 export default function App() {
 
@@ -49,42 +48,57 @@ export default function App() {
     month: "long",
   });
 
-  function handleTabChange(nextTab) {
-    setTab(nextTab);
+  <Page
+    user={user}
+    onRequireLogin={() => setLoginRequested(true)}
+  />
 
-    if (!user && PROTECTED_TABS.includes(nextTab)) {
-      setLoginRequested(true);
-    } else {
-      setLoginRequested(false);
-    }
-  }
+
+
   async function handleLogin() {
     const currentUser = await getUser();
     setUser(currentUser);
     setLoginRequested(false);
   }
 
- async function handleLogout() {
-  await signOut();
+  async function handleLogout() {
+    await signOut();
 
-  setUser(null);
-  setTab("today");
+    setUser(null);
+    setTab("today");
+    setLoginRequested(false);
+  }
+function handleTabChange(nextTab) {
+  setTab(nextTab);
   setLoginRequested(false);
 }
 
-
   return (
     <div className="min-h-screen">
-      <header className="px-4 pb-4 pt-8 text-center sm:pt-10">
+      <header className="relative px-4 pb-4 pt-8 text-center sm:pt-10">
         <p className="text-[11px] uppercase tracking-[0.22em] text-muted">
           {today}
         </p>
         <h1 className="mt-2 font-display text-3xl tracking-tight sm:text-4xl">
           My Food Plan
         </h1>
-        <button type="button" onClick={handleLogout}>
-          Logout
-        </button>
+        {user ? (
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="absolute right-4 top-4 cursor-pointer rounded-full border border-line px-3 py-2 text-sm text-muted transition-all duration-150 hover:border-cream hover:bg-cream hover:text-ink hover:shadow-md sm:right-6 sm:top-6"
+          >
+            Logout
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setLoginRequested(true)}
+            className="absolute right-4 top-4 cursor-pointer rounded-full border border-line px-3 py-2 text-sm text-muted transition-all duration-150 hover:border-cream hover:bg-cream hover:text-ink hover:shadow-md sm:right-6 sm:top-6"
+          >
+            Login
+          </button>
+        )}
       </header>
       <Navigation
         tabs={TABS}
