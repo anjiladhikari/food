@@ -33,7 +33,7 @@ export default function Footer() {
     loadVisits();
   }, []);
   return (
-    <footer className="px-4 pb-10 text-center text-xs text-muted">
+    <footer className="px-4 pb-8 text-center text-xs text-muted sm:pb-10">
       <p className="mx-auto mb-3 max-w-xl leading-relaxed">
         A responsive weekly meal planner for viewing daily meals, weekly plans,
         shopping information and cooking instructions.

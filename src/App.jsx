@@ -164,14 +164,14 @@ function handleTabChange(nextTab) {
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-20 flex items-center gap-2.5 border-b border-line/70 bg-cream px-3 py-1.5 sm:gap-4 sm:px-6 sm:py-2">
-        <div className="flex shrink-0 items-center gap-2.5 border-r border-line pr-2.5 sm:gap-3 sm:pr-4">
-          <h1 className="font-display text-sm leading-tight tracking-tight whitespace-nowrap sm:text-lg">
+      <header className="sticky top-0 z-20 flex items-center gap-1.5 border-b border-line/70 bg-cream px-2 py-1 sm:gap-4 sm:px-6 sm:py-2">
+        <div className="flex shrink-0 flex-col items-start border-r border-line pr-1.5 sm:flex-row sm:items-center sm:gap-3 sm:pr-4">
+          <h1 className="font-display text-[13px] leading-tight tracking-tight whitespace-nowrap sm:text-lg">
             My Food Plan
           </h1>
 
-          <div className="rounded-md border-l border-line bg-surface px-2 py-0.5 text-left leading-tight">
-            <p className="text-[9px] uppercase tracking-[0.14em] text-muted sm:text-[10px]">
+          <div className="flex items-center gap-1.5 rounded-md px-0 py-0 text-left leading-tight sm:block sm:border-l sm:border-line sm:bg-surface sm:px-2 sm:py-0.5">
+            <p className="text-[9px] uppercase tracking-[0.1em] text-muted sm:text-[10px] sm:tracking-[0.14em]">
               {today}
             </p>
 
@@ -207,7 +207,7 @@ function handleTabChange(nextTab) {
           <button
             type="button"
             onClick={handleLogout}
-            className="ml-auto shrink-0 cursor-pointer rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-muted transition-all duration-150 hover:border-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-sm"
+            className="ml-auto shrink-0 cursor-pointer rounded-full border border-line bg-surface px-2 py-1 text-[11px] leading-none text-muted sm:px-3 sm:py-1.5 transition-all duration-150 hover:border-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-sm"
           >
             Logout
           </button>
@@ -215,7 +215,7 @@ function handleTabChange(nextTab) {
           <button
             type="button"
             onClick={() => setLoginRequested(true)}
-            className="ml-auto shrink-0 cursor-pointer rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-muted transition-all duration-150 hover:border-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-sm"
+            className="ml-auto shrink-0 cursor-pointer rounded-full border border-line bg-surface px-2 py-1 text-[11px] leading-none text-muted sm:px-3 sm:py-1.5 transition-all duration-150 hover:border-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-sm"
           >
             Login
           </button>
@@ -223,7 +223,7 @@ function handleTabChange(nextTab) {
       </header>
       <main
         className={
-          "mx-auto w-full pb-16 pt-6 sm:px-6 sm:pt-8 " +
+          "mx-auto w-full pb-12 pt-4 sm:px-6 sm:pb-16 sm:pt-8 " +
           (tab === "week" ? "max-w-6xl px-2" : "max-w-3xl px-4")
         }
       >

@@ -30,7 +30,7 @@ export default function MealCard({ accent, title, time, items, compact = false }
   }
 
   return (
-    <article className="rounded-2xl border border-line bg-surface p-5 sm:p-6">
+    <article className="rounded-2xl border border-line bg-surface p-4 sm:p-6">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className={"h-2 w-2 shrink-0 rounded-full " + dot} />
@@ -44,7 +44,7 @@ export default function MealCard({ accent, title, time, items, compact = false }
         )}
       </div>
 
-      <ul className="mt-3 space-y-1.5 text-[15px] leading-relaxed text-ink sm:text-base">
+      <ul className="mt-2.5 space-y-1 text-[14px] leading-relaxed text-ink sm:mt-3 sm:space-y-1.5 sm:text-base">
         {items.length ? (
           items.map((item, i) => <li key={i}>{item}</li>)
         ) : (
