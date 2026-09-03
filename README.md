@@ -403,6 +403,6 @@ The next major feature is a small **RAG / AI assistant** that can work with meal
 
 Built for making everyday meal planning simpler.
 
-**[Geeky Anjil](https://anjiladhikari.com.np)**
+**[Geeky Anjil](https://anjiladhikari.com.np)** 🙌
 
 </div>
