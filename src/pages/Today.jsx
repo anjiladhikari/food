@@ -14,7 +14,7 @@ import {
 } from "../lib/meals.js";
 
 const MEAL_BUTTON =
-  "rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-[13px] ";
+  "rounded-full border px-2 py-1 text-[11px] font-medium transition-all duration-150 sm:px-2.5 sm:py-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:text-[13px] ";
 
 const MEAL_BUTTON_DONE =
   "cursor-default border-olive/40 bg-olive/10 text-olive";
@@ -23,7 +23,7 @@ const MEAL_BUTTON_TODO =
   "cursor-pointer border-line bg-surface text-muted hover:border-ink/40 hover:bg-ink/5 hover:text-ink active:translate-y-0 motion-safe:hover:-translate-y-px";
 
 const NAV_BUTTON =
-  "shrink-0 cursor-pointer rounded-full border border-line bg-surface px-2.5 py-0.5 text-[11px] font-medium transition-all duration-150 hover:border-ink hover:bg-ink hover:text-cream hover:shadow-md hover:shadow-black/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream active:translate-y-0 motion-safe:hover:-translate-y-px sm:text-[13px]";
+  "shrink-0 cursor-pointer rounded-full border border-line bg-surface px-2 py-1 text-[11px] font-medium sm:px-2.5 sm:py-0.5 transition-all duration-150 hover:border-ink hover:bg-ink hover:text-cream hover:shadow-md hover:shadow-black/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream active:translate-y-0 motion-safe:hover:-translate-y-px sm:text-[13px]";
 
 export default function Today({ user, onRequireLogin }) {
   const { rows, error, loading } = useSheet(SHEETS.plan);
@@ -130,7 +130,7 @@ export default function Today({ user, onRequireLogin }) {
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 sm:gap-x-3">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 sm:gap-x-3">
         <button
           type="button"
           onClick={() =>
@@ -151,7 +151,7 @@ export default function Today({ user, onRequireLogin }) {
           </h2>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
+        <div className="order-last flex w-full flex-wrap items-center gap-1 sm:order-none sm:w-auto sm:gap-1.5">
           <span className="group relative inline-flex">
             <button
               type="button"
@@ -245,7 +245,7 @@ export default function Today({ user, onRequireLogin }) {
         </button>
       </div>
 
-      <div className="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
+      <div className="mt-4 space-y-2.5 sm:mt-8 sm:space-y-4">
         <MealCard
           accent="breakfast"
           title="Breakfast"
