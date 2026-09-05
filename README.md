@@ -1,10 +1,13 @@
 <div align="center">
 
+
+### [ ▶ See Live Demo ](https://anjiladhikari.github.io/food_planner/)
+
 # 🍽️ My Food Plan
 
 **A personal meal planner for meals, groceries, inventory and spending.**
+**A responsive meal-planning and food tracking app powered by Google Sheets and Supabase.**
 
-### [ ▶ See Live Demo ](https://anjiladhikari.github.io/food_planner/)
 
 <br>
 
