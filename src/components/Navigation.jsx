@@ -53,6 +53,17 @@ export default function Navigation({ tabs, active, onChange }) {
             </button>
           );
         })}
+
+        <button
+          type="button"
+          className={
+            "min-w-fit shrink-0 cursor-pointer rounded-sm border-b-2 px-0.5 py-1.5 text-[11px] font-medium whitespace-nowrap transition-colors duration-150 sm:py-1 sm:text-[13px] " +
+            FOCUS_RING +
+            "border-transparent text-muted hover:border-line hover:text-ink"
+          }
+        >
+          Tools
+        </button>
       </nav>
 
       <div className="flex min-w-0 flex-1 items-center justify-between gap-2 sm:hidden">
@@ -101,6 +112,15 @@ export default function Navigation({ tabs, active, onChange }) {
                   </li>
                 );
               })}
+
+              <li>
+                <button
+                  type="button"
+                  className="block w-full cursor-pointer px-3 py-2 text-left text-[13px] text-muted transition-colors duration-150 hover:bg-ink/5 hover:text-ink"
+                >
+                  Tools
+                </button>
+              </li>
             </ul>
           )}
         </div>
